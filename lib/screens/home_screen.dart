@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mb_course/screens/login_screen.dart';
 import 'package:mb_course/widgets/course_card.dart';
 import 'package:provider/provider.dart';
 import '../config/app_routes.dart';
@@ -75,8 +76,21 @@ class HomeScreen extends StatelessWidget {
                   ),
                 )
               ],
+              
             )
-          )
-        );
+          ),
+          floatingActionButton: userProvider.isLoggedIn
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UserLoginScreen()),
+                );
+              },
+              child: Icon(Icons.login_rounded, color: Colors.white,),
+              backgroundColor: const Color.fromARGB(255, 54, 109, 72),
+            ),
+    );
   }
 }

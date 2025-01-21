@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../config/app_routes.dart';
 import '../models/user.dart';
+import '../providers/user_provider.dart';
+import '../widgets/custom_button.dart';
 import '../widgets/display_image_widget.dart';
 import 'user/edit_description.dart';
 import 'user/edit_email.dart';
@@ -9,6 +13,8 @@ import 'user/edit_name.dart';
 import 'user/edit_phone.dart';
 
 class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
+
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
@@ -18,6 +24,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final user = UserData.myUser;
     final screenWidth = MediaQuery.of(context).size.width;
+    final userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -71,6 +78,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: buildAbout(user, screenWidth),
+            ),
+            Center(
+              child: userProvider.isLoggedIn
+                  ? 
+                  CustomElevatedButton(
+                    text: 'Logout',
+                    onPressed: () {
+                      userProvider.logout();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Logged out successfully!'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                    },
+                  )
+                  : ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.login);
+                      },
+                      child: Text('Login'),
+                    ),
             ),
           ],
         ),
