@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mb_course/consts/consts.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   final String text;
@@ -25,7 +26,7 @@ class CustomElevatedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         padding:
             const EdgeInsets.symmetric(horizontal: 100, vertical: 16),
-        backgroundColor: color ??  const Color.fromARGB(255, 61, 124, 77),
+        backgroundColor: color ??  primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? 12.0),
         ),
@@ -33,7 +34,7 @@ class CustomElevatedButton extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          color: textColor ?? Colors.white,
+          color: textColor ?? whiteColor,
           fontSize: fontSize ?? 18.0,
         ),
       ),

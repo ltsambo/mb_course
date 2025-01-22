@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mb_course/route/route_constants.dart';
 import 'package:provider/provider.dart';
-import 'config/app_routes.dart';
+import 'route/screen_export.dart';
 import 'providers/course_porvider.dart';
 import 'providers/user_provider.dart';
-import 'screens/home_screen.dart';
-import 'screens/login_screen.dart';
+import 'screens/auth/login_screen.dart';
 import 'screens/my_courses_screen.dart';
-import 'screens/settings_screen.dart';
 
 import 'widgets/custom_bottom_nav_bar.dart';
 
@@ -25,7 +24,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter App',
-        initialRoute: AppRoutes.home,
+        initialRoute: homeScreenRoute,
         routes: {
           AppRoutes.home: (context) => MainScreen(),
           AppRoutes.login: (context) => UserLoginScreen(),

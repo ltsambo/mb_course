@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mb_course/screens/login_screen.dart';
+import 'package:mb_course/route/route_constants.dart';
+import 'package:mb_course/screens/auth/login_screen.dart';
 import 'package:mb_course/widgets/course_card.dart';
 import 'package:provider/provider.dart';
-import '../config/app_routes.dart';
-import '../widgets/course_carousel.dart';
-import '../providers/course_porvider.dart';
-import '../providers/user_provider.dart';
+import '../../route/screen_export.dart';
+import '../../widgets/course_carousel.dart';
+import '../../providers/course_porvider.dart';
+import '../../providers/user_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -41,7 +42,7 @@ class HomeScreen extends StatelessWidget {
               IconButton(
               icon: Icon(Icons.login),
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.login);
+                Navigator.pushNamed(context, logInScreenRoute);
               },
             ),
           ],
@@ -82,11 +83,8 @@ class HomeScreen extends StatelessWidget {
           floatingActionButton: userProvider.isLoggedIn
           ? null
           : FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => UserLoginScreen()),
-                );
+              onPressed: () {                
+                Navigator.pushNamed(context, logInScreenRoute);
               },
               child: Icon(Icons.login_rounded, color: Colors.white,),
               backgroundColor: const Color.fromARGB(255, 54, 109, 72),

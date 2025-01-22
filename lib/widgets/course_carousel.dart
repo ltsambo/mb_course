@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../models/course.dart';
-import '../screens/course_detail_screen.dart';
+import '../screens/course/course_detail_screen.dart';
 
 class CourseCarousel extends StatelessWidget {
   final List<Course> courses;
