@@ -21,14 +21,18 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => const SettingsScreen(),
       );
-    case managementScreenRoute:
-      return MaterialPageRoute(
-        builder: (context) => const ManagementItemsScreen(),
-      );
-    case listUserScreenRoute:
+    // case managementScreenRoute:
+    //   return MaterialPageRoute(
+    //     builder: (context) => const ManagementItemsScreen(),
+    //   );
+    case userListScreenRoute:
       return MaterialPageRoute(
         builder: (context) => UserListScreen(),
       );
+    case userProfileScreenRoute:
+      return MaterialPageRoute(
+        builder: (context) => UserProfileScreen(), // Replace with your Page Settings screen    
+    );
     default:
       return MaterialPageRoute(
         // Make a screen for undefine

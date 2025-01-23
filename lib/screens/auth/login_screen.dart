@@ -16,6 +16,16 @@ class UserLoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor, // Background color
+      appBar: AppBar(
+        backgroundColor: backgroundColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.close, color: primaryColor),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -119,7 +129,7 @@ class UserLoginScreen extends StatelessWidget {
                     onPressed: () {
                       // Add Register functionality
                     },
-                    child: DefaultTextWg(text: "Don’t have an account yet?", fontColor: primaryColor,),                    
+                    child: DefaultTextWg(text: "Register", fontColor: primaryColor,),                    
                   ),
                 ],
               ),

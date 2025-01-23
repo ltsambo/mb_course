@@ -69,7 +69,7 @@ class UserData {
 
   static User myUser = User(
     image:
-        "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg",
+        "https://cdn.vectorstock.com/i/2000v/31/95/user-sign-icon-person-symbol-human-avatar-vector-12693195.avif",
     name: 'Test Test',
     username: 'test',
     password: '123',
