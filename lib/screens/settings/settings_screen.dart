@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/screens/auth/change_password.dart';
+import 'package:mb_course/screens/auth/login_screen.dart';
 import 'package:mb_course/screens/business/contact_us.dart';
 import 'package:mb_course/screens/user/user_profile.dart';
 import 'package:mb_course/widgets/default_text.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/user_provider.dart';
+import '../../utlis/auth_utlis.dart';
 import '../../widgets/section_widgets.dart';
 import '../user/user_list.dart';
 
@@ -15,22 +19,24 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> {  
   bool showDropdown = false; // Track dropdown visibility
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       backgroundColor: backgroundColor, // Light beige background
       appBar: AppBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: primaryColor,
         elevation: 0,
-        title: const DefaultTextWg(text: 'Settings', fontSize: 24),
-        centerTitle: true,
+        title: const DefaultTextWg(text: 'Settings', fontSize: 24, fontColor: whiteColor,),
+        centerTitle: false,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ListView(
+        child: userProvider.isAuthenticated ? ListView(
           children: [
             // Management Section
             BuildSectionCardWg(
@@ -38,7 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 BuildListItemWg(
                   icon: Icons.account_circle_outlined,
-                  text: "Admin Management Panel",
+                  text: "Management Panel",
                   onTap: () {
                     setState(() {
                       showDropdown = !showDropdown; // Toggle dropdown
@@ -206,11 +212,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   showDropdown: false,
                   isDropdownMenu: false,
                 ),
+                
                 BuildListItemWg(
                   icon: Icons.logout,
                   text: "Logout",
                   onTap: () {
-                    // Logout functionality
+                    handleLogout(context);
                   },
                   showDropdown: false,
                   isDropdownMenu: false,
@@ -218,7 +225,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
           ],
-        ),
+        ): Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch, 
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ElevatedButton(
+              onPressed: () {Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserLoginScreen(),
+                ),
+              );},
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 100, vertical: 16),
+                backgroundColor: primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+              ),
+              child: DefaultTextWg(text: 'Login', fontColor: whiteColor, fontSize: 18,)
+            )                 
+          ],
+        ) 
       ),
     );
   }    

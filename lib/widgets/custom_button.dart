@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
+import 'package:mb_course/widgets/default_text.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   final String text;
@@ -31,13 +32,7 @@ class CustomElevatedButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius ?? 12.0),
         ),
       ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: textColor ?? whiteColor,
-          fontSize: fontSize ?? 18.0,
-        ),
-      ),
+      child: DefaultTextWg(text: text, fontColor: color ?? whiteColor,)
     );
   }
 }

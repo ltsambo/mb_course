@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
+import 'package:mb_course/route/screen_export.dart';
 import 'package:mb_course/screens/auth/login_screen.dart';
 import 'package:mb_course/widgets/course_card.dart';
+import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/course_carousel.dart';
 import '../../providers/course_porvider.dart';
 import '../../providers/user_provider.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
@@ -17,29 +21,41 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: primaryColor,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(userProvider.isLoggedIn ? 'Welcome Back' : 'Course List'),
-            if (userProvider.isLoggedIn)
-              Text(
-                userProvider.username ?? '',
-                style: TextStyle(fontSize: 14, color: Colors.white70),                
-              ),
+            userProvider.isAuthenticated ? 
+              DefaultTextWg(text: 'Welcome Back', fontSize: 16, fontWeight: FontWeight.bold, fontColor: Colors.white,) :
+              DefaultTextWg(text: 'Course List', fontSize: 24, fontWeight: FontWeight.bold, fontColor: whiteColor,),
+            if(userProvider.isAuthenticated)
+              DefaultTextWg(text: userProvider.isAuthenticated ? userProvider.currentUser!.username : '', fontSize: 15, fontColor: blackColor,)                                                       
           ],
-        ),
+        ), 
+        
         actions: [
-          if (userProvider.isLoggedIn)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                backgroundImage: AssetImage(
-                    'assets/user_avatar.png'), // Replace with user image source
+          if (userProvider.isAuthenticated)          
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserProfileScreen(),
+                ),);               
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: CircleAvatar(
+                  backgroundColor: whiteColor,                  
+                  backgroundImage: AssetImage(
+                    userProvider.currentUser!.image, // Replace with user image source
+                  ),
+                ),
               ),
             )
           else
             IconButton(
+              color: whiteColor,
             icon: Icon(Icons.login),
             onPressed: () {
               Navigator.push(
@@ -66,7 +82,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               // Carousel Section
               SizedBox(
-                height: 16,
+                height: 24,
               ),
               CourseCarousel(courses: courses),
               SizedBox(
@@ -86,7 +102,7 @@ class HomeScreen extends StatelessWidget {
             
           )
         ),
-        floatingActionButton: userProvider.isLoggedIn
+        floatingActionButton: userProvider.isAuthenticated
         ? null
         : FloatingActionButton(
             onPressed: () {                
@@ -98,8 +114,8 @@ class HomeScreen extends StatelessWidget {
               );
               // Navigator.pushNamed(context, logInScreenRoute);
             },
-            child: Icon(Icons.login_rounded, color: Colors.white,),
             backgroundColor: const Color.fromARGB(255, 54, 109, 72),
+            child: Icon(Icons.login_rounded, color: Colors.white,),
           ),
     );
   }

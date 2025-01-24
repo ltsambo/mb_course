@@ -3,7 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/models/user.dart';
 import 'package:mb_course/widgets/default_text.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/user_provider.dart';
 import 'components/btm_delete_user.dart';
 
 
@@ -12,7 +14,8 @@ class UserInfoEditScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User _userData = UserData.myUser;
+    final userProvider = Provider.of<UserProvider>(context);
+    final userData = userProvider.currentUser;
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -45,8 +48,8 @@ class UserInfoEditScreen extends StatelessWidget {
                 Center(
                   child: CircleAvatar(
                     radius: 60,
-                    backgroundImage: NetworkImage(
-                      "https://via.placeholder.com/150", // Replace with user's avatar
+                    backgroundImage: AssetImage(
+                      userData!.image, // Replace with user's avatar
                     ),
                   ),
                 ),
@@ -68,25 +71,25 @@ class UserInfoEditScreen extends StatelessWidget {
             _buildEditableField(
               label: "Username",
               icon: Icons.person_outline,
-              value: _userData.username,
+              value: userData.username,
             ),
             const SizedBox(height: 16),            
             _buildEditableField(
               label: "Fullname",
               icon: Icons.card_membership_outlined,
-              value: _userData.name,
+              value: userData.name,
             ),
             const SizedBox(height: 16),
             _buildEditableField(
               label: "Email",
               icon: Icons.email_outlined,
-              value: _userData.email,
+              value: userData.email,
             ),
             const SizedBox(height: 16),
             _buildEditableField(
               label: "Phone Number",
               icon: Icons.phone_outlined,
-              value: _userData.phone,
+              value: userData.phone,
             ),
             const SizedBox(height: 32),
             // Confirm Button

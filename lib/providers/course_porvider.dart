@@ -12,7 +12,9 @@ class CourseProvider with ChangeNotifier {
       description: 'Lorem ipsum dolor sit amet . The graphic and typographic operators know this well, in reality all the professions dealing with the universe of communication have a stable relationship with these words, but what is it? Lorem ipsum is a dummy text without any sense. It is a sequence of Latin words that, as they are positioned, do not form sentences with a complete sense, but give life to a test text useful to fill spaces that will subsequently be occupied from ad hoc texts composed by communication professionals.',
       createdBy: 'Alex',
       lastUpdated: '12 Jan 2025',
-      price: '2500',
+      isOnSale: true,
+      price: 2500,
+      salePrice: 2300,
       demoVideo: '',
       lessons: [
         Lesson(id: '1', title: 'Introduction', isDemo: true),
@@ -28,7 +30,9 @@ class CourseProvider with ChangeNotifier {
       description: 'Lorem ipsum dolor sit amet . The graphic and typographic operators know this well, in reality all the professions dealing with the universe of communication have a stable relationship with these words, but what is it? Lorem ipsum is a dummy text without any sense. It is a sequence of Latin words that, as they are positioned, do not form sentences with a complete sense, but give life to a test text useful to fill spaces that will subsequently be occupied from ad hoc texts composed by communication professionals.',
       createdBy: 'Alex',
       lastUpdated: '12 Jan 2025',
-      price: '2500',
+      isOnSale: true,
+      price: 2500,
+      salePrice: 2300,
       demoVideo: '',
       lessons: [
         Lesson(id: '1', title: 'Setup and Installation', isDemo: true),
@@ -40,11 +44,13 @@ class CourseProvider with ChangeNotifier {
       id: '3',
       title: 'AWS Beginner',
       coverImage: 'assets/aws_course.jpeg',
-      duration: '15 hours',
+      duration: '13 hours',
       description: 'Lorem ipsum dolor sit amet . The graphic and typographic operators know this well, in reality all the professions dealing with the universe of communication have a stable relationship with these words, but what is it? Lorem ipsum is a dummy text without any sense. It is a sequence of Latin words that, as they are positioned, do not form sentences with a complete sense, but give life to a test text useful to fill spaces that will subsequently be occupied from ad hoc texts composed by communication professionals.',
       createdBy: 'Alex',
       lastUpdated: '12 Jan 2025',
-      price: '2500',
+      isOnSale: false,
+      price: 2500,
+      salePrice: 2300,
       demoVideo: '',
       lessons: [
         Lesson(id: '1', title: 'Setup and Installation', isDemo: true),
@@ -63,7 +69,9 @@ class CourseProvider with ChangeNotifier {
       description: 'Lorem ipsum dolor sit amet . The graphic and typographic operators know this well, in reality all the professions dealing with the universe of communication have a stable relationship with these words, but what is it? Lorem ipsum is a dummy text without any sense. It is a sequence of Latin words that, as they are positioned, do not form sentences with a complete sense, but give life to a test text useful to fill spaces that will subsequently be occupied from ad hoc texts composed by communication professionals.',
       createdBy: 'Morgan',
       lastUpdated: '20 Jan 2025',
-      price: '1500',
+      isOnSale: false,
+      price: 2500,
+      salePrice: 2300,
       demoVideo: '',
       lessons: [
         Lesson(id: '1', title: 'Setup and Installation', isDemo: true),
@@ -77,4 +85,9 @@ class CourseProvider with ChangeNotifier {
   ];
 
   List<Course> get courses => _courses;
+
+  Course findProdById(String productId) {
+    return _courses.firstWhere((element) => element.id == productId);
+  }
+
 }

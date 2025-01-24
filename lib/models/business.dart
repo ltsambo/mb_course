@@ -1,11 +1,6 @@
 
 class BusinessProfile {
-  final String logo;
-  final String name;
-  final String email;
-  final String contact;
-  final String address;
-  final String description;
+  final String logo, name, email, contact, address, description;
   final List<SocialProfile> socialProfiles;
 
   BusinessProfile({

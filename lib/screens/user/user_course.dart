@@ -16,7 +16,7 @@ class UserCourseListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: primaryColor,
         elevation: 0,
         // leading: IconButton(
         //   icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -24,7 +24,7 @@ class UserCourseListScreen extends StatelessWidget {
         //     // Back button action
         //   },
         // ),
-        title: DefaultTextWg(text: "My Courses", fontSize:  24,),        
+        title: DefaultTextWg(text: "My Courses", fontSize:  24, fontColor: whiteColor,),        
         centerTitle: true,
       ),
       body: Padding(

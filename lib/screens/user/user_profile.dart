@@ -4,8 +4,10 @@ import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/screens/user/user_edit.dart';
 import 'package:mb_course/screens/user/user_payment_history.dart';
 import 'package:mb_course/widgets/default_text.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/user.dart';
+import '../../providers/user_provider.dart';
 import 'components/btm_delete_user.dart';
 import 'user_course.dart';
 
@@ -15,7 +17,12 @@ class UserProfileScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    User _userData = UserData.myUser;
+    final user = Provider.of<UserProvider>(context).currentUser;
+
+    if (user == null) {
+      return Center(child: Text("No user logged in"));
+    }
+
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -37,114 +44,116 @@ class UserProfileScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
-            // User Avatar and Info
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(
-                _userData.image, // Replace with user image URL or asset path
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              // User Avatar and Info
+              CircleAvatar(
+                radius: 50,
+                backgroundImage: AssetImage(
+                  user.image, // Replace with user image URL or asset path
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            // Text(
-            //   "Admin",
-            //   style: GoogleFonts.poppins(
-            //     fontSize: 20,
-            //     fontWeight: FontWeight.bold,
-            //     color: Colors.black,
-            //   ),
-            // ),            
-            const SizedBox(height: 24),
-            _buildInformationSection(_userData),
-            
-            const SizedBox(height: 24),
-            
-            // Action List Items
-            _buildActionItem(
-              icon: Icons.menu_book_outlined,
-              text: "My Courses",
-              onTap: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => UserCourseListScreen())
-                );
-              },
-            ),
-            const Divider(height: 1),
-            _buildActionItem(
-              icon: Icons.add_shopping_cart,
-              text: "My Cart",
-              onTap: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => UserCourseListScreen())
-                );
-              },
-            ),
-            const Divider(height: 1),
-            _buildActionItem(
-              icon: Icons.favorite_sharp,
-              text: "Wishlist",
-              onTap: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => UserCourseListScreen())
-                );
-              },
-            ),
-            const Divider(height: 1),
-            _buildActionItem(
-              icon: Icons.account_balance_wallet_outlined,
-              text: "Billing Details",
-              onTap: () {                
-                Navigator.push(context, 
-                  MaterialPageRoute(builder: (context) => PaymentHistoryScreen())
-                );
-              },
-            ),
-            const Divider(height: 1),
-            const SizedBox(height: 24),  
-              // Edit Profile Button
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserInfoEditScreen(), // Replace with your Page Settings screen
+              const SizedBox(height: 16),
+              // Text(
+              //   "Admin",
+              //   style: GoogleFonts.poppins(
+              //     fontSize: 20,
+              //     fontWeight: FontWeight.bold,
+              //     color: Colors.black,
+              //   ),
+              // ),            
+              _buildInformationSection(user),
+              
+              const SizedBox(height: 24),
+              
+              // Action List Items
+              _buildActionItem(
+                icon: Icons.menu_book_outlined,
+                text: "My Courses",
+                onTap: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => UserCourseListScreen())
+                  );
+                },
+              ),
+              const Divider(height: 1),
+              _buildActionItem(
+                icon: Icons.add_shopping_cart,
+                text: "My Cart",
+                onTap: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => UserCourseListScreen())
+                  );
+                },
+              ),
+              const Divider(height: 1),
+              _buildActionItem(
+                icon: Icons.favorite_sharp,
+                text: "Wishlist",
+                onTap: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => UserCourseListScreen())
+                  );
+                },
+              ),
+              const Divider(height: 1),
+              _buildActionItem(
+                icon: Icons.account_balance_wallet_outlined,
+                text: "Billing Details",
+                onTap: () {                
+                  Navigator.push(context, 
+                    MaterialPageRoute(builder: (context) => PaymentHistoryScreen())
+                  );
+                },
+              ),
+              const Divider(height: 1),
+              const SizedBox(height: 24),  
+                // Edit Profile Button
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserInfoEditScreen(), // Replace with your Page Settings screen
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4A6057),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4A6057),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  minimumSize: const Size(double.infinity, 50),
                 ),
-                minimumSize: const Size(double.infinity, 50),
-              ),
-              child: Text(
-                "Edit Profile",
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                child: Text(
+                  "Edit Profile",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                DefaultTextWg(text: "Joined Date: 24 Aug 2024", fontColor: Colors.grey,),                
-                BtmDeleteUser(),
-              ],
-            ),            
-          ],
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  DefaultTextWg(text: "Joined Date: 24 Aug 2024", fontColor: Colors.grey,),                
+                  BtmDeleteUser(),
+                ],
+              ),            
+            ],
+          ),
         ),
-      ),
+      )
+      
     );
   }
 
@@ -201,13 +210,7 @@ class UserProfileScreen extends StatelessWidget {
         backgroundColor: Colors.orange,
         child: Icon(icon, color: Colors.white),
       ),
-      title: Text(
-        text,
-        style: GoogleFonts.poppins(
-          fontSize: 16,
-          color: Colors.black,
-        ),
-      ),
+      title: DefaultTextWg(text: text,),
       trailing: const Icon(Icons.chevron_right, color: Colors.black),
       onTap: onTap,
     );

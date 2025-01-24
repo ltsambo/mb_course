@@ -1,14 +1,9 @@
 import 'lesson.dart';
 
 class Course {
-  final String id;
-  final String title;
-  final String coverImage;
-  final String duration;
-  final String description;
-  final String createdBy;
-  final String lastUpdated;
-  final String price;
+  final String id, title, coverImage, duration, description, createdBy,lastUpdated;
+  final bool isOnSale;
+  final double price, salePrice;
   final String demoVideo;
   final List<Lesson> lessons;
 
@@ -20,7 +15,9 @@ class Course {
     required this.description,
     required this.createdBy,
     required this.lastUpdated,
+    required this.isOnSale,
     required this.price,
+    required this.salePrice,
     required this.demoVideo,
     required this.lessons,    
   });

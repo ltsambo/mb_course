@@ -8,13 +8,15 @@ class DefaultTextWg extends StatelessWidget {
   final double fontSize;
   final FontWeight fontWeight;
   final Color fontColor;
+  final TextAlign textAlign;
 
   const DefaultTextWg({
     super.key, 
     required this.text, 
     this.fontSize = 14, 
     this.fontWeight = FontWeight.bold,
-    this.fontColor = blackColor
+    this.fontColor = blackColor,
+    this.textAlign = TextAlign.center,
   });
 
   @override

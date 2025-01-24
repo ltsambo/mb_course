@@ -1,29 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/route/route_constants.dart';
+import 'package:mb_course/screens/cart/cart_screen.dart';
+import 'package:mb_course/screens/user/user_course.dart';
+import 'package:mb_course/widgets/custom_bottom_nav_bar.dart';
+// import 'package:mb_course/screens/cart/cart_screen.dart';
 import 'package:provider/provider.dart';
 import 'route/screen_export.dart';
 import 'providers/course_porvider.dart';
 import 'providers/user_provider.dart';
 import 'screens/auth/login_screen.dart';
-import 'screens/my_courses_screen.dart';
-
-import 'widgets/custom_bottom_nav_bar.dart';
+// import 'package:motion_tab_bar_v2/motion-tab-bar.dart'; // Import the MotionTabBar package
 
 void main() {
-  runApp(MyApp());
+  runApp(
+      MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
+      child: MyApp(),
+    ),    
+  );
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return 
+    MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => CourseProvider()),
       ],
-      child: MaterialApp(
+      child: 
+      MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter App',
+        title: 'Testing App',
         initialRoute: homeScreenRoute,
         routes: {
           AppRoutes.home: (context) => MainScreen(),
@@ -35,6 +48,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -44,7 +59,8 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _screens = [
     HomeScreen(),
-    MyCoursesScreen(),
+    UserCourseListScreen(),
+    CartScreen(),
     SettingsScreen(),
   ];
 
@@ -58,10 +74,8 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_selectedIndex],
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
-      ),
+      bottomNavigationBar: BtmMotionNavbar(onItemTapped: _onItemTapped,)
+      
     );
   }
 }
