@@ -25,19 +25,20 @@ class UserCourseListScreen extends StatelessWidget {
         //   },
         // ),
         title: DefaultTextWg(text: "My Courses", fontSize:  24, fontColor: whiteColor,),        
-        centerTitle: true,
+        centerTitle: false,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Expanded(
-                child: ListView.builder(
-                  itemCount: courseProvider.courses.length,
-                  itemBuilder: (context, index) {
-                    final course = courseProvider.courses[index];
-                    return CourseCard(course: course,);
-                  },
-                ),
-              )
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+        child: 
+          Expanded(          
+          child: ListView.builder(
+            itemCount: courseProvider.courses.length,
+            itemBuilder: (context, index) {
+              final course = courseProvider.courses[index];
+              return CourseCard(course: course,);
+            },
+          ),
+        )
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mb_course/consts/consts.dart';
-import 'package:mb_course/models/user.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 

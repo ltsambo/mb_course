@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mb_course/widgets/default_text.dart';
 
 import '../../consts/consts.dart';
+import '../../services/global_methods.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -19,18 +20,18 @@ class CartScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              // GlobalMethods.warningDialog(
-              //     title: 'Empty your cart?',
-              //     subtitle: 'Are you sure?',
-              //     fct: () async {
-              //       await cartProvider.clearOnlineCart();
-              //       cartProvider.clearLocalCart();
-              //     },
-              //     context: context);
+              GlobalMethods.warningDialog(
+                  title: 'Empty your cart?',
+                  subtitle: 'Are you sure?',
+                  fct: () async {
+                    // await cartProvider.clearOnlineCart();
+                    // cartProvider.clearLocalCart();
+                  },
+                  context: context);
             },
             icon: Icon(
               Icons.delete,
-              color: primaryColor,
+              color: whiteColor,
             ),
           ),
         ]

@@ -29,12 +29,12 @@ class EmptyScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(
-                height: 50,
+                height: 30,
               ),
-              Image.asset(
+              Image.asset(                
                 imagePath,
                 width: double.infinity,
-                height: size.height * 0.4,
+                height: size.height * 0.3,                
               ),
               const SizedBox(
                 height: 10,
@@ -49,7 +49,7 @@ class EmptyScreen extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              DefaultTextWg(text: title, fontSize: 20,),
+              DefaultTextWg(text: title, fontSize: 20, fontColor: primaryColor,),
               // TextWidget(text: title, color: Colors.cyan, textSize: 20),
               const SizedBox(
                 height: 20,
@@ -61,7 +61,8 @@ class EmptyScreen extends StatelessWidget {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  elevation: 0, backgroundColor: Theme.of(context).colorScheme.secondary,
+                  elevation: 0, 
+                  backgroundColor: primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                     side: BorderSide(
@@ -76,7 +77,7 @@ class EmptyScreen extends StatelessWidget {
                   // GlobalMethods.navigateTo(
                   //     ctx: context, routeName: FeedsScreen.routeName);
                 },
-                child: DefaultTextWg(text: buttonText, fontWeight: FontWeight.bold,)
+                child: DefaultTextWg(text: buttonText, fontWeight: FontWeight.bold, fontColor: whiteColor,)
                 // TextWidget(
                 //   text: buttonText,
                 //   textSize: 20,

@@ -102,15 +102,7 @@ class _CartWidgetState extends State<CartWidget> {
                                   if (_quantityTextController.text == '1') {
                                     return;
                                   } else {
-                                    cartProvider.reduceQuantityByOne(
-                                        cartModel.productId);
-                                    setState(() {
-                                      _quantityTextController.text = (int.parse(
-                                                  _quantityTextController
-                                                      .text) -
-                                              1)
-                                          .toString();
-                                    });
+                                    
                                   }
                                 },
                                 color: Colors.red,
@@ -142,21 +134,7 @@ class _CartWidgetState extends State<CartWidget> {
                                     });
                                   },
                                 ),
-                              ),
-                              _quantityController(
-                                fct: () {
-                                  cartProvider.increaseQuantityByOne(
-                                      cartModel.productId);
-                                  setState(() {
-                                    _quantityTextController.text = (int.parse(
-                                                _quantityTextController.text) +
-                                            1)
-                                        .toString();
-                                  });
-                                },
-                                color: Colors.green,
-                                icon: CupertinoIcons.plus,
-                              )
+                              ),                              
                             ],
                           ),
                         ),
@@ -169,11 +147,6 @@ class _CartWidgetState extends State<CartWidget> {
                         children: [
                           InkWell(
                             onTap: () async {
-                              await cartProvider.removeOneItem(
-                                cartId: cartModel.id,
-                                productId: cartModel.productId,
-                                quantity: cartModel.quantity,
-                              );
                               
                             },
                             child: const Icon(

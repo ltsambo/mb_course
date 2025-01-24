@@ -3,6 +3,7 @@ import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/screens/auth/change_password.dart';
 import 'package:mb_course/screens/auth/login_screen.dart';
 import 'package:mb_course/screens/business/contact_us.dart';
+import 'package:mb_course/screens/core/empty_screen.dart';
 import 'package:mb_course/screens/user/user_profile.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
@@ -225,29 +226,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
           ],
-        ): Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch, 
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ElevatedButton(
-              onPressed: () {Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UserLoginScreen(),
-                ),
-              );},
-              style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 100, vertical: 16),
-                backgroundColor: primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-              ),
-              child: DefaultTextWg(text: 'Login', fontColor: whiteColor, fontSize: 18,)
-            )                 
-          ],
-        ) 
+        ): EmptyScreen(imagePath: 'assets/user_avatar.png', title: 'Authentication required!', subtitle: 'Please login to access this page', buttonText: 'Login'),
       ),
     );
   }    

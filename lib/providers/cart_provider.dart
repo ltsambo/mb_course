@@ -21,8 +21,7 @@ class CartProvider with ChangeNotifier {
       productId,
       () => CartModel(
         id: DateTime.now().toString(),
-        productId: productId,
-        quantity: quantity,
+        productId: productId
       ),
     );
     notifyListeners();
@@ -46,31 +45,6 @@ class CartProvider with ChangeNotifier {
   //             ));
   //   }
     notifyListeners();
-  }
-
-  void reduceQuantityByOne(String productId) {
-    // _cartItems.update(
-    //   productId,
-    //   (value) => CartModel(
-    //     id: value.id,
-    //     productId: productId,
-    //     quantity: value.quantity - 1,
-    //   ),
-    // );
-
-    // notifyListeners();
-  }
-
-  void increaseQuantityByOne(String productId) {
-    // _cartItems.update(
-    //   productId,
-    //   (value) => CartModel(
-    //     id: value.id,
-    //     productId: productId,
-    //     quantity: value.quantity + 1,
-    //   ),
-    // );
-    // notifyListeners();
   }
 
   Future<void> removeOneItem(

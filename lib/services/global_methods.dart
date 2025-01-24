@@ -18,31 +18,34 @@ class GlobalMethods {
     required Function fct,
     required BuildContext context,
   }) async {
-    await showDialog(
+    await showDialog(        
         context: context,
         builder: (context) {
           return AlertDialog(
+            backgroundColor: backgroundColor,
             title: Row(children: [
               Image.asset(
-                'assets/images/warning-sign.png',
-                height: 20,
-                width: 20,
+                'assets/warning_sign.jpeg',
+                height: 30,
+                width: 30,
                 fit: BoxFit.fill,
               ),
               const SizedBox(
                 width: 8,
               ),
               Text(title),
-            ]),
+              SizedBox(height: 16,),
+            ]),            
             content: Text(subtitle),
             actions: [
               TextButton(
+                
                 onPressed: () {
                   if (Navigator.canPop(context)) {
                     Navigator.pop(context);
                   }
                 },
-                child: DefaultTextWg(text: 'Cancel', fontColor: whiteColor,)                
+                child: DefaultTextWg(text: 'Cancel', fontColor: primaryColor,)                
               ),
               TextButton(
                 onPressed: () {
@@ -51,7 +54,7 @@ class GlobalMethods {
                     Navigator.pop(context);
                   }
                 },
-                child: DefaultTextWg(text: 'OK', fontColor: Colors.red,)                              
+                child: DefaultTextWg(text: 'OK', fontColor: const Color.fromARGB(255, 177, 32, 21),)                              
               ),
             ],
           );
