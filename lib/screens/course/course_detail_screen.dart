@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mb_course/widgets/custom_button.dart';
 import 'package:mb_course/widgets/lesson_card.dart';
 import '../../models/course.dart';
 import '../../widgets/video_player_widget.dart';
@@ -44,6 +45,10 @@ class CourseDetailScreen extends StatelessWidget {
                   Text('Last updated on: ${course.lastUpdated}'),
                   SizedBox(height: 8),
                   Text('Price: ${course.price}'),
+                  SizedBox(height: 16),
+                  CustomElevatedButton(
+                    text: 'Add to cart', 
+                    onPressed: () => {}),
                   SizedBox(height: 16),
                   Text(
                     'What youll learn',

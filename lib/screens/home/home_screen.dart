@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
           onRefresh: () async {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Refreshed the courses!'),
+                content: Text('Courses refreshed!'),
                 backgroundColor: Colors.green,
               ),
             );

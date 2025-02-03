@@ -28,7 +28,7 @@ class CustomBottomNavBar extends StatelessWidget {
           label: 'My Courses',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.add_shopping_cart, color: blackColor),
+          icon: Icon(Icons.shopping_bag_outlined, color: blackColor),
           label: 'Cart',
         ),
         BottomNavigationBarItem(
@@ -53,7 +53,7 @@ class BtmMotionNavbar extends StatelessWidget {
     return MotionTabBar(
         initialSelectedTab: "Home",
         labels: const ["Home", "Courses", "Cart", "Settings"],
-        icons: const [Icons.home, Icons.book, Icons.add_shopping_cart_outlined, Icons.settings],
+        icons: const [Icons.home, Icons.book, Icons.shopping_bag_outlined, Icons.settings],
         tabSize: 50,
         tabBarHeight: 65,
         textStyle: const TextStyle(

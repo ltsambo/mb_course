@@ -76,7 +76,7 @@ class UserInfoEditScreen extends StatelessWidget {
             _buildEditableField(
               label: "Fullname",
               icon: Icons.card_membership_outlined,
-              value: userData.name,
+              value: userData.username,
             ),
             const SizedBox(height: 16),
             _buildEditableField(
@@ -88,7 +88,7 @@ class UserInfoEditScreen extends StatelessWidget {
             _buildEditableField(
               label: "Phone Number",
               icon: Icons.phone_outlined,
-              value: userData.phone,
+              value: ''//userData.phone,
             ),
             const SizedBox(height: 32),
             // Confirm Button

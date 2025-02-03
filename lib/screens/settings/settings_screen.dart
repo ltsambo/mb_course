@@ -149,7 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UserProfileScreen(), // Replace with your Page Settings screen
+                          builder: (context) => UserProfileScreen(), 
                         ),
                     );
                   },
@@ -163,7 +163,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ChangePasswordScreen(), // Replace with your Page Settings screen
+                          builder: (context) => ChangePasswordScreen(), 
                         ),
                     );
                   },
@@ -226,7 +226,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
           ],
-        ): EmptyScreen(imagePath: 'assets/user_avatar.png', title: 'Authentication required!', subtitle: 'Please login to access this page', buttonText: 'Login'),
+        ): EmptyScreen(
+          imagePath: 'assets/login_lock.jpg', title: 'Authentication required!', subtitle: 'Please login to access this page', buttonText: 'Login', 
+          onPressed: () {                
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserLoginScreen(),
+                ),
+              );
+              // Navigator.pushNamed(context, logInScreenRoute);
+            },
+        ),
       ),
     );
   }    

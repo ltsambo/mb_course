@@ -9,13 +9,17 @@ import '../../services/utlis.dart';
 
 class EmptyScreen extends StatelessWidget {
   const EmptyScreen(
-      {Key? key,
+    {
+      Key? key,
       required this.imagePath,
       required this.title,
       required this.subtitle,
-      required this.buttonText})
+      required this.buttonText,
+      required this.onPressed
+    })
       : super(key: key);
   final String imagePath, title, subtitle, buttonText;
+  final VoidCallback onPressed;
   @override
   Widget build(BuildContext context) {    
     Size size = Utils(context).getScreenSize;
@@ -61,31 +65,20 @@ class EmptyScreen extends StatelessWidget {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  elevation: 0, 
                   backgroundColor: primaryColor,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    side: BorderSide(
-                      color: primaryColor,
-                    ),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  // onPrimary: color,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                  minimumSize: const Size(double.infinity, 50),
                 ),
-                onPressed: () {
-                  // GlobalMethods.navigateTo(
-                  //     ctx: context, routeName: FeedsScreen.routeName);
-                },
-                child: DefaultTextWg(text: buttonText, fontWeight: FontWeight.bold, fontColor: whiteColor,)
-                // TextWidget(
-                //   text: buttonText,
-                //   textSize: 20,
-                //   color:
-                //       themeState ? Colors.grey.shade300 : Colors.grey.shade800,
-                //   isTitle: true,
-                // ),
-              ),
+                onPressed: onPressed,
+                child: DefaultTextWg(
+                  text: buttonText,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontColor: whiteColor,
+                ),
+              ),              
             ]),
       )),
     );

@@ -157,7 +157,7 @@ class UserProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInformationSection(User userData) {
+  Widget _buildInformationSection(UserModel userData) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -173,11 +173,11 @@ class UserProfileScreen extends StatelessWidget {
             const SizedBox(height: 10),
             _buildInfoRow('Username', userData.username),
             const Divider(),
-            _buildInfoRow('Fullname', userData.name),
+            _buildInfoRow('Fullname', userData.username),
             const Divider(),
             _buildInfoRow('Email', userData.email),
             const Divider(),
-            _buildInfoRow('Contact', userData.phone),
+            _buildInfoRow('Contact', userData.email),
           ],
         ),
       ),

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/widgets/default_text.dart';
+import 'package:provider/provider.dart';
 
+import '../models/cart.dart';
 import '../models/course.dart';
+import '../providers/cart_provider.dart';
 import '../screens/course/course_detail_screen.dart';
 
 class CourseCard extends StatelessWidget {
@@ -21,16 +24,34 @@ class CourseCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('${course.duration} | ${course.lessons.length} lessons'),   
-            DefaultTextWg(text:'20 USD', fontColor: primaryColor,),   
-          ]          
+            DefaultTextWg(text: '20 USD', fontColor: primaryColor),   
+          ],
         ),
-             
+        trailing: Container(    
+                     
+          decoration: BoxDecoration(            
+            color: primaryColor.withOpacity(0.1), 
+            shape: BoxShape.circle, 
+            border: Border.all(color: primaryColor, width: 1.5), 
+          ),
+          child: IconButton(
+            icon: Icon(Icons.add_shopping_cart, color: primaryColor),
+            onPressed: () {
+              final cartProvider = Provider.of<CartProvider>(context, listen: false);
+              cartProvider.addCoursesToCart(
+                courseId: course.id,
+                price: course.price
+              );
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added to cart!')));
+            },
+          ),
+        ),
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
             builder: (_) => CourseDetailScreen(course: course),
           ),
-        )
+        ),
       ),
     );    
   }

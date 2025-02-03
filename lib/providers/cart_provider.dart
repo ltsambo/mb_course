@@ -2,7 +2,7 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 // import 'package:grocery_app/consts/firebase_consts.dart';
-
+import 'package:flutter/material.dart';
 import '../models/cart.dart';
 
 
@@ -13,15 +13,16 @@ class CartProvider with ChangeNotifier {
     return _cartItems;
   }
 
-  void addProductsToCart({
-    required String productId,
-    required int quantity,
+  void addCoursesToCart({
+    required String courseId,
+    required double price,
   }) {
     _cartItems.putIfAbsent(
-      productId,
+      courseId,
       () => CartModel(
         id: DateTime.now().toString(),
-        productId: productId
+        courseId: courseId,
+        price: price,
       ),
     );
     notifyListeners();
@@ -47,19 +48,18 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> removeOneItem(
-      {required String cartId,
-      required String productId,
-      required int quantity}) async {
+  Future<void> removeCourse(String id, 
+      {required courseId
+    }) async {
     // final User? user = authInstance.currentUser;
     // await userCollection.doc(user!.uid).update({
     //   'userCart': FieldValue.arrayRemove([
     //     {'cartId': cartId, 'productId': productId, 'quantity': quantity}
     //   ])
     // });
-    // _cartItems.remove(productId);
-    // await fetchCart();
-    // notifyListeners();
+    _cartItems.remove(courseId);
+    await fetchCart();
+    notifyListeners();
   }
 
   Future<void> clearOnlineCart() async {
@@ -67,12 +67,18 @@ class CartProvider with ChangeNotifier {
     // await userCollection.doc(user!.uid).update({
     //   'userCart': [],
     // });
-    // _cartItems.clear();
-    // notifyListeners();
+    _cartItems.clear();
+    notifyListeners();
   }
 
   void clearLocalCart() {
-    // _cartItems.clear();
-    // notifyListeners();
+    _cartItems.clear();
+    notifyListeners();
   }
+
+  double get totalPrice {
+    return _cartItems.values.fold(0, (sum, item) => sum + item.price);
+  }
+
+  int get cartCount => _cartItems.length;
 }

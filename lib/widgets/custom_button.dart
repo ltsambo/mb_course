@@ -29,10 +29,11 @@ class CustomElevatedButton extends StatelessWidget {
             const EdgeInsets.symmetric(horizontal: 100, vertical: 16),
         backgroundColor: color ??  primaryColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius ?? 12.0),
+          borderRadius: BorderRadius.circular(borderRadius ?? 12.0),          
         ),
+        minimumSize: const Size(double.infinity, 50),
       ),
       child: DefaultTextWg(text: text, fontColor: color ?? whiteColor,)
-    );
+    );    
   }
 }
