@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/main.dart';
-import 'package:mb_course/route/route_constants.dart';
-import 'package:mb_course/route/screen_export.dart';
 import 'package:mb_course/widgets/custom_button.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';

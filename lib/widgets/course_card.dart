@@ -3,7 +3,6 @@ import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
-import '../models/cart.dart';
 import '../models/course.dart';
 import '../providers/cart_provider.dart';
 import '../screens/course/course_detail_screen.dart';

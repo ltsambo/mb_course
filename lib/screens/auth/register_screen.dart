@@ -5,10 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:mb_course/config/api_config.dart';
 import 'package:mb_course/consts/consts.dart';
+import 'package:mb_course/providers/user_provider.dart';
 import 'package:mb_course/widgets/default_text.dart';
+import 'package:provider/provider.dart';
 
 import 'login_screen.dart';
-
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -26,56 +27,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
+  // final TextEditingController _phoneController = TextEditingController();
+  // final TextEditingController _addressController = TextEditingController();
 
-  Future<void> registerUser() async {
-    print('call function register');
-    if (!_acceptTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("You must accept the terms & conditions")),
-      );
-      return;
-    }
+  // Future<void> registerUser() async {
+  //   print('call function register');
+  //   if (!_acceptTerms) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text("You must accept the terms & conditions")),
+  //     );
+  //     return;
+  //   }
 
-    if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Passwords do not match")),
-      );
-      return;
-    }
+  //   if (_passwordController.text != _confirmPasswordController.text) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text("Passwords do not match")),
+  //     );
+  //     return;
+  //   }
 
-    var url = Uri.parse(registerUrl);
-    print('url $url');
-    var response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        "username": _usernameController.text,
-        "email": _emailController.text,
-        "password": _passwordController.text,
-        "confirm_password": _confirmPasswordController.text,
-        "role": "student",
-        // "phone_number": _phoneController.text,
-        // "address": _addressController.text
-      }),
-    );
+  //   var url = Uri.parse(registerUrl);
+  //   print('url $url');
+  //   var response = await http.post(
+  //     url,
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: jsonEncode({
+  //       "username": _usernameController.text,
+  //       "email": _emailController.text,
+  //       "password": _passwordController.text,
+  //       "confirm_password": _confirmPasswordController.text,
+  //       "role": "student",
+  //       // "phone_number": _phoneController.text,
+  //       // "address": _addressController.text
+  //     }),
+  //   );
 
-    if (response.statusCode == 201) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Registration Successful"), backgroundColor: Colors.green,),
-      );
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserLoginScreen()));
-    } else {
-      var error = jsonDecode(response.body);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.toString())),
-      );
-    }
-  }
+  //   if (response.statusCode == 201) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text("Registration Successful"), backgroundColor: Colors.green,),
+  //     );
+  //     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserLoginScreen()));
+  //   } else {
+  //     var error = jsonDecode(response.body);
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text(error.toString())),
+  //     );
+  //   }
+  // }
   
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       backgroundColor: backgroundColor, // Light beige background
       body: SingleChildScrollView(
@@ -122,10 +124,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 24),
               // Register Button
-              ElevatedButton(
-                onPressed: _acceptTerms
-                    ? registerUser
-                    : null,
+              authProvider.isLoading
+                ? CircularProgressIndicator()
+                : ElevatedButton(
+                onPressed: () async {
+                      String? message = await authProvider.registerUser(
+                        username: _usernameController.text,
+                        email: _emailController.text,
+                        password: _passwordController.text,
+                        confirmPassword: _confirmPasswordController.text,
+                        role: "student",
+                        phoneNumber: '',
+                        address: '',
+                      );
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(message ?? "Registration failed")),
+                      );
+
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserLoginScreen()));
+                    },                    
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor, // Green button color
                   shape: RoundedRectangleBorder(

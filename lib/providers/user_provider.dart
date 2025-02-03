@@ -91,6 +91,44 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  Future<PasswordChangeResponse> changePassword({
+    required String oldPassword,
+    required String newPassword,
+    required String confirmNewPassword,
+  }) async {
+    _setLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('accessToken');
+
+    if (token == null) {
+      _setLoading(false);
+      return PasswordChangeResponse(
+        status: "error",
+        message: "User not logged in",
+      );
+    }
+
+    var url = Uri.parse(changePasswordUrl);
+    var response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        "old_password": oldPassword,
+        "new_password": newPassword,
+        "confirm_new_password": confirmNewPassword,  // Include confirm password
+      }),
+    );
+
+    _setLoading(false);
+    var jsonResponse = jsonDecode(response.body);
+
+    return PasswordChangeResponse.fromJson(jsonResponse);
+  }
+
   // 🔹 Logout User
   Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -101,6 +139,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 }
+
 
 
 // class UserProvider extends ChangeNotifier {

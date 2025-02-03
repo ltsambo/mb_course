@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserModel {
   final String username, email, accessToken, refreshToken;
@@ -22,6 +19,26 @@ class UserModel {
       image: json["image"] ?? "",
       accessToken: json["access_token"],
       refreshToken: json["refresh_token"],
+    );
+  }
+}
+
+class PasswordChangeResponse {
+  final String status;
+  final String message;
+  final Map<String, dynamic>? errors;
+
+  PasswordChangeResponse({
+    required this.status,
+    required this.message,
+    this.errors,
+  });
+
+  factory PasswordChangeResponse.fromJson(Map<String, dynamic> json) {
+    return PasswordChangeResponse(
+      status: json["status"],
+      message: json["message"],
+      errors: json["errors"] ?? {},
     );
   }
 }

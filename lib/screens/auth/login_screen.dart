@@ -20,8 +20,7 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  bool _isLoading = false;
-
+  
   // Future<void> loginUser() async {
   //   setState(() {
   //     _isLoading = true;
