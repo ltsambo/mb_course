@@ -4,6 +4,7 @@ import 'package:mb_course/screens/auth/change_password.dart';
 import 'package:mb_course/screens/auth/login_screen.dart';
 import 'package:mb_course/screens/business/contact_us.dart';
 import 'package:mb_course/screens/core/empty_screen.dart';
+import 'package:mb_course/screens/course/course_list.dart';
 import 'package:mb_course/screens/user/user_profile.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
@@ -66,17 +67,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       );
                     },
                   ),
-                  BuildSubMenuItemWg(
-                    text: "User Role",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UserListScreen(), 
-                        ),
-                      );
-                    },
-                  ),
+                  // BuildSubMenuItemWg(
+                  //   text: "User Role",
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => UserListScreen(), 
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                   Divider(indent: 35, endIndent: 25,),
                   BuildSubMenuItemWg(
                     text: "Course",
@@ -84,7 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UserListScreen(), 
+                          builder: (context) => CourseListScreen(), 
                         ),
                       );
                     },
@@ -149,7 +150,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UserProfileScreen(), 
+                          builder: (context) => UserProfileScreen(userId: userProvider.currentUser!.id,), 
                         ),
                     );
                   },

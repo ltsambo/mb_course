@@ -1,16 +1,23 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mb_course/config/api_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user.dart';
+import '../screens/auth/login_screen.dart';
 
 class UserProvider with ChangeNotifier {
   UserModel? _currentUser;
+  UserProfileModel? _selectedUser;
+  List<UserListModel> _userList = [];
   UserModel? get currentUser => _currentUser;
   bool _isLoading = false;
+  BuildContext? _context;
 
+  UserProfileModel? get selectedUser => _selectedUser;
+  List<UserListModel> get users => _userList;
   UserModel? get user => _currentUser;
   bool get isLoading => _isLoading;
   bool get isAuthenticated => user != null;
@@ -18,6 +25,11 @@ class UserProvider with ChangeNotifier {
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
+  }
+
+  // 🔹 Set context for navigation
+  void setContext(BuildContext context) {
+    _context = context;
   }
 
   // 🔹 Register User
@@ -57,6 +69,50 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  // 🔹 Admin: Create New User
+  Future<String?> createUser({
+    required String username,
+    required String email,
+    required String role,
+    required String password,
+    required String confirmPassword,
+  }) async {
+    _setLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('accessToken');
+
+    if (token == null) {
+      _setLoading(false);
+      return "Admin not logged in";
+    }
+
+    var url = Uri.parse(adminUserCreateUrl);
+    var response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        "username": username,
+        "email": email,
+        "role": role,
+        "password": password,
+        "confirm_password": confirmPassword,
+      }),
+    );
+
+    _setLoading(false);
+    var jsonResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 201 && jsonResponse["status"] == "success") {
+      return jsonResponse["message"];
+    } else {
+      return jsonResponse["message"];
+    }
+  }
+
   // 🔹 Login User
   Future<String?> loginUser({
     required String username,
@@ -76,18 +132,110 @@ class UserProvider with ChangeNotifier {
 
     _setLoading(false);
     var jsonResponse = jsonDecode(response.body);
-
+    print('response data $jsonResponse');
     if (response.statusCode == 200 && jsonResponse["status"] == "success") {
       _currentUser = UserModel.fromJson(jsonResponse["data"]); // Parse response into UserModel
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('accessToken', _currentUser!.accessToken);
-      await prefs.setString('refreshToken', _currentUser!.refreshToken);
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // await prefs.setString('accessToken', _currentUser!.accessToken);
+      // await prefs.setString('refreshToken', _currentUser!.refreshToken);
+      await AuthHelper.saveToken(_currentUser!.accessToken, _currentUser!.refreshToken);
 
       notifyListeners();
       return jsonResponse["message"];
     } else {
       return jsonResponse["message"];
+    }
+  }
+
+  Future<void> fetchUsers() async {
+    _setLoading(true);
+    print('fetch data');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('accessToken');
+
+    if (token == null) {
+      // _setLoading(false);
+      _handleSessionExpired();
+      return;
+    }
+
+    var url = Uri.parse(userListUrl);
+    var response = await http.get(
+      url,
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    _setLoading(false);
+
+    if (response.statusCode == 200) {
+      print('inside response success');
+      var jsonResponse = jsonDecode(response.body);
+      print('response $jsonResponse');
+      List<UserListModel> fetchedUsers = (jsonResponse["data"] as List)
+          .map((user) => UserListModel.fromJson(user))
+          .toList();
+
+      _userList = fetchedUsers;
+      print('user list $_userList');
+      notifyListeners();
+    } else if (response.statusCode == 401) {
+      _handleSessionExpired(); // If session expired, logout and go to login screen
+    } else {
+      print("Failed to load users");
+    }
+  }
+
+  // 🔹 Fetch User by ID
+  Future<void> fetchUserById(int userId) async {
+    print('start fetch user');
+    _setLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('accessToken');
+
+    if (token == null) {
+      _setLoading(false);
+      return;
+    }
+
+    var url = Uri.parse(userProfileUrl(userId));
+    print('retrieve url $url/');
+    var response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    _setLoading(false);
+
+    print('profile retrieve ${response.statusCode}');
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      _selectedUser = UserProfileModel.fromJson(jsonResponse["data"]);
+      print('selected user $_selectedUser');
+      notifyListeners();
+    } else {
+      print("Failed to load user details");
+    }
+  }
+
+  Future<void> _handleSessionExpired() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken');
+    await prefs.remove('refreshToken');
+
+    _currentUser = null;
+    notifyListeners();
+
+    if (_context != null) {
+      Navigator.pushAndRemoveUntil(
+        _context!,
+        MaterialPageRoute(builder: (context) => UserLoginScreen()),
+        (route) => false,
+      );
     }
   }
 
@@ -131,15 +279,35 @@ class UserProvider with ChangeNotifier {
 
   // 🔹 Logout User
   Future<void> logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('accessToken');
-    await prefs.remove('refreshToken');
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs.remove('accessToken');
+    // await prefs.remove('refreshToken');
+    await AuthHelper.clearToken();
 
     _currentUser = null;
     notifyListeners();
   }
 }
 
+class AuthHelper {
+  static final _storage = FlutterSecureStorage();
+
+  // ✅ Get stored access token
+  static Future<String?> getToken() async {
+    return await _storage.read(key: 'accessToken');
+  }
+
+  // ✅ Store token securely
+  static Future<void> saveToken(String accessToken, String refreshToken) async {
+    await _storage.write(key: 'accessToken', value: accessToken);
+    await _storage.write(key: 'refreshToken', value: refreshToken);
+  }
+
+  // ✅ Clear stored tokens (logout)
+  static Future<void> clearToken() async {
+    await _storage.deleteAll();
+  }
+}
 
 
 // class UserProvider extends ChangeNotifier {

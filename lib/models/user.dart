@@ -1,11 +1,14 @@
 
 class UserModel {
-  final String username, email, accessToken, refreshToken;
+  final String username, email, role, accessToken, refreshToken;
   final String image;
+  final int id;
 
   UserModel({
+    required this.id,
     required this.username,
     required this.email,
+    required this.role,
     required this.accessToken,
     required this.refreshToken,
     required this.image,
@@ -14,8 +17,10 @@ class UserModel {
   // Convert JSON to UserModel
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
+      id: json["id"],
       username: json["username"],
       email: json["email"] ?? "",
+      role: json["role"] ?? "",
       image: json["image"] ?? "",
       accessToken: json["access_token"],
       refreshToken: json["refresh_token"],
@@ -39,6 +44,60 @@ class PasswordChangeResponse {
       status: json["status"],
       message: json["message"],
       errors: json["errors"] ?? {},
+    );
+  }
+}
+
+
+class UserProfileModel {
+  final int id;
+  final String username;
+  final String email;
+  final String role;
+  final String avatar;
+
+  UserProfileModel({
+    required this.id,
+    required this.username,
+    required this.email,
+    required this.role,
+    required this.avatar,
+  });
+
+  factory UserProfileModel.fromJson(Map<String, dynamic> json) {
+    return UserProfileModel(
+      id: json["id"],
+      username: json["username"],
+      email: json["email"],
+      role: json["role"],
+      avatar: json["avatar"] ?? "https://via.placeholder.com/150",
+    );
+  }
+}
+
+
+class UserListModel {
+  final int id;
+  final String username;
+  final String email;
+  final String role;
+  final String image;
+
+  UserListModel({
+    required this.id,
+    required this.username,
+    required this.email,
+    required this.role,
+    required this.image,
+  });
+
+  factory UserListModel.fromJson(Map<String, dynamic> json) {
+    return UserListModel(
+      id: json["id"],
+      username: json["username"],
+      email: json["email"],
+      role: json["role"],
+      image: "https://via.placeholder.com/150",  // Placeholder for now
     );
   }
 }

@@ -16,6 +16,15 @@ class UserLoginScreen extends StatefulWidget {
 }
 
 class _UserLoginScreenState extends State<UserLoginScreen> {  
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   final authProvider = Provider.of<UserProvider>(context, listen: false);
+  //   authProvider.setContext(context); // Set context for navigation
+  //   Future.microtask(() => authProvider.fetchUsers()); // Fetch users
+  // }
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -175,6 +184,7 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                       );
 
                       if (authProvider.user != null) {
+                        print('auth pro ${authProvider.user}');
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (context) => MainScreen()),

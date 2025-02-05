@@ -29,10 +29,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => UserListScreen(),
       );
-    case userProfileScreenRoute:
-      return MaterialPageRoute(
-        builder: (context) => UserProfileScreen(), // Replace with your Page Settings screen    
-    );
+    // case userProfileScreenRoute:
+    //   return MaterialPageRoute(
+    //     builder: (context) => () // UserProfileScreen(), // Replace with your Page Settings screen    
+    // );
     default:
       return MaterialPageRoute(
         // Make a screen for undefine

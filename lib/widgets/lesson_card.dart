@@ -14,9 +14,9 @@ class LessonCard extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: course.lessons.length,
+      itemCount: course.lessons!.length,
       itemBuilder: (context, index) {
-        final lesson = course.lessons[index];
+        final lesson = course.lessons![index];
         return ListTile(
           leading: Text((index + 1).toString()),
           title: Text(lesson.title),

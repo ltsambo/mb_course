@@ -36,7 +36,7 @@ class CourseCarousel extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   image: DecorationImage(
-                    image: AssetImage(course.coverImage),
+                    image: NetworkImage(course.coverImage),
                     fit: BoxFit.cover,
                   ),
                 ),

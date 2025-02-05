@@ -9,8 +9,19 @@ import '../../widgets/course_carousel.dart';
 import '../../providers/course_porvider.dart';
 import '../../providers/user_provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<CourseProvider>(context, listen: false).fetchCourses();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +51,7 @@ class HomeScreen extends StatelessWidget {
                 Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UserProfileScreen(),
+                  builder: (context) => UserProfileScreen(userId: userProvider.currentUser!.id,),
                 ),);               
               },
               child: Padding(
@@ -71,6 +82,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: RefreshIndicator(
           onRefresh: () async {
+            
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Courses refreshed!'),
@@ -93,8 +105,8 @@ class HomeScreen extends StatelessWidget {
                 child: ListView.builder(
                   itemCount: courseProvider.courses.length,
                   itemBuilder: (context, index) {
-                    final course = courseProvider.courses[index];
-                    return CourseCard(course: course,);
+                    // final course = courses[index];
+                    return CourseCard(course: courses[index],);
                   },
                 ),
               )

@@ -14,15 +14,16 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('course.coverImage ${course.coverImage}');
     return Card(
       child: ListTile(
-        leading: Image.asset(course.coverImage, width: 50, height: 50),
+        leading: Image.network(course.coverImage, width: 50, height: 50),
         title: DefaultTextWg(text: course.title),
         isThreeLine: true,        
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${course.duration} | ${course.lessons.length} lessons'),   
+            Text('${course.totalDuration} | ${course.lessons!.length} lessons'),   
             DefaultTextWg(text: '20 USD', fontColor: primaryColor),   
           ],
         ),
@@ -38,7 +39,7 @@ class CourseCard extends StatelessWidget {
             onPressed: () {
               final cartProvider = Provider.of<CartProvider>(context, listen: false);
               cartProvider.addCoursesToCart(
-                courseId: course.id,
+                courseId: course.id.toString(),
                 price: course.price
               );
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added to cart!')));
