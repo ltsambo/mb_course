@@ -4,6 +4,7 @@ import 'package:mb_course/models/lesson.dart';
 class Course {
   final int id;
   final String title, instructorUsername;
+  final String? recommendation;
   final int totalDuration;
   final String? description;
   final String coverImage;
@@ -18,6 +19,7 @@ class Course {
     required this.id,
     required this.title,
     required this.instructorUsername,
+    this.recommendation,
     required this.totalDuration,
     this.description,
     required this.coverImage,
@@ -34,6 +36,7 @@ class Course {
       id: json['id'] ?? 0,
       title: json['title'],
       instructorUsername: json['instructor_username'],
+      recommendation: json['recommendation'],
       totalDuration: json['total_duration'],
       description: json['description'] ?? "No description available",
       coverImage: json['cover_image'] ?? "http://10.10.11.11:8000/media/course/Queries%20for%20design%20issues/no-image-available.jpeg",

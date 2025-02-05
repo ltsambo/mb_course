@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../models/course.dart';
 import '../providers/cart_provider.dart';
 import '../screens/course/course_detail_screen.dart';
+import '../screens/course/course_update.dart';
 
 class CourseCard extends StatelessWidget {
   final Course course;
@@ -13,8 +14,7 @@ class CourseCard extends StatelessWidget {
   const CourseCard({super.key, required this.course});
 
   @override
-  Widget build(BuildContext context) {
-    print('course.coverImage ${course.coverImage}');
+  Widget build(BuildContext context) {    
     return Card(
       child: ListTile(
         leading: Image.network(course.coverImage, width: 50, height: 50),
@@ -24,11 +24,10 @@ class CourseCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('${course.totalDuration} | ${course.lessons!.length} lessons'),   
-            DefaultTextWg(text: '20 USD', fontColor: primaryColor),   
+            DefaultTextWg(text: '${course.price.toStringAsFixed(0)} ks', fontColor: primaryColor),   
           ],
         ),
-        trailing: Container(    
-                     
+        trailing: Container(                         
           decoration: BoxDecoration(            
             color: primaryColor.withOpacity(0.1), 
             shape: BoxShape.circle, 
@@ -45,6 +44,49 @@ class CourseCard extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added to cart!')));
             },
           ),
+        ),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CourseDetailScreen(course: course),
+          ),
+        ),
+      ),
+    );    
+  }
+}
+
+class AdminCourseCard extends StatelessWidget {
+  final Course course;
+
+  const AdminCourseCard({super.key, required this.course});
+
+  @override
+  Widget build(BuildContext context) {    
+    return Card(
+      child: ListTile(
+        leading: Image.network(course.coverImage, width: 50, height: 50),
+        title: DefaultTextWg(text: course.title),
+        isThreeLine: true,        
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${course.totalDuration} | ${course.lessons!.length} lessons'),   
+            DefaultTextWg(text: '${course.price.toStringAsFixed(0)} ks', fontColor: primaryColor),   
+          ],
+        ),
+        trailing: Container(                         
+          // decoration: BoxDecoration(            
+          //   color: primaryColor.withOpacity(0.1), 
+          //   // shape: BoxShape.circle, 
+          //   // border: Border.all(color: primaryColor, width: 1.5), 
+          // ),
+          child: IconButton(
+                  icon: Icon(Icons.edit_square, color: primaryColor),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => UpdateCourseScreen(course: course,)));
+                  },
+                ),
         ),
         onTap: () => Navigator.push(
           context,

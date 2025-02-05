@@ -21,3 +21,6 @@ String profileUrl = "$_baseUrl/employee/api/user-profile/";
 // Course
 String coursesUrl = "$_baseUrl/course/";
 String courseCreateUrl = "$_baseUrl/course/create/";
+String courseUpdateUrl(int courseId) {
+  return "$_baseUrl/course/update/$courseId/";
+}

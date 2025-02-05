@@ -7,26 +7,28 @@ import 'package:mb_course/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../models/course.dart';
 import '../../providers/course_porvider.dart';
 import 'components/text_form_field_widget.dart';
 
-class CreateCourseScreen extends StatefulWidget {
-  const CreateCourseScreen({Key? key}) : super(key: key);
+class UpdateCourseScreen extends StatefulWidget {
+  final Course course;
+  const UpdateCourseScreen({Key? key, required this.course}) : super(key: key);
 
   @override
-  State<CreateCourseScreen> createState() => _CreateCourseScreenState();
+  State<UpdateCourseScreen> createState() => _UpdateCourseScreenState();
 }
 
-class _CreateCourseScreenState extends State<CreateCourseScreen> {
+class _UpdateCourseScreenState extends State<UpdateCourseScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _title = "";
-  String _recommendation = "";
-  int _totalDuration = 0;
+  late String _title;
+  late String _recommendation;
+  late int _totalDuration = 0;
   String? _description;
-  String _instructorUsername = "instructor"; // Replace with logged-in instructor
-  bool _isOnSale = false;
-  double _price = 0.0;
-  double _salePrice = 0.0;
+  // String _instructorUsername = "instructor"; // Replace with logged-in instructor
+  late bool _isOnSale = false;
+  late double _price = 0.0;
+  late double _salePrice = 0.0;
   File? _coverImage;
   File? _demoVideo;
 
@@ -55,12 +57,12 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      final success = await Provider.of<CourseProvider>(context, listen: false).createCourse(
+      final success = await Provider.of<CourseProvider>(context, listen: false).updateCourse(
+        courseId: widget.course.id,
         title: _title,
         totalDuration: _totalDuration,
         description: _description,
         recommendation: _recommendation,
-        instructorUsername: _instructorUsername,
         isOnSale: _isOnSale,
         price: _price,
         salePrice: _salePrice,
@@ -69,12 +71,25 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
       );
 
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Course created successfully!")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Course updated successfully!")));
         Navigator.pop(context);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to create course.")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to update course.")));
       }
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print('recommendation ${widget.course.recommendation}');
+    _title = widget.course.title;
+    _recommendation = widget.course.recommendation ?? "";
+    _totalDuration = widget.course.totalDuration;
+    _description = widget.course.description;
+    _isOnSale = widget.course.isOnSale;
+    _price = widget.course.price;
+    _salePrice = widget.course.salePrice;
   }
   
   @override
@@ -92,7 +107,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
         //   },
         // ),
         title: Text(
-          "Create Course",
+          "Update Course",
           style: GoogleFonts.poppins(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -109,27 +124,32 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
           child: Column(
             children: [
               CustomTextFormField(
+              initialValue: _title,
               label: "Title",
               onSaved: (value) => _title = value!,
             ),
             const SizedBox(height: 12),
             CustomTextFormField(
+              initialValue: _description,
               label: "Description",
               onSaved: (value) => _description = value,
             ),
             const SizedBox(height: 12),                        
             CustomTextFormField(
+              initialValue: _recommendation,
               label: "Recommendation", 
               onSaved: (value) => _recommendation = value!,
             ),
             const SizedBox(height: 12),                        
             CustomTextFormField(
+              initialValue: _price.toStringAsFixed(0),
               label: "Price", 
               keyboardType: TextInputType.number,
               onSaved: (value) => _price= double.tryParse(value!) ?? 0.0,
             ),
             const SizedBox(height: 12),
             CustomTextFormField(
+                  initialValue: _salePrice.toStringAsFixed(0),
                   label: "Sale Price",
                   keyboardType: TextInputType.number,
                   onSaved: (value) => _salePrice = double.tryParse(value!) ?? 0.0,
@@ -180,7 +200,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                 minimumSize: const Size(double.infinity, 50),
               ),
               child: Text(
-                "Create",
+                "Update",
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

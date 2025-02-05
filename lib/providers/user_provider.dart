@@ -149,10 +149,8 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<void> fetchUsers() async {
-    _setLoading(true);
-    print('fetch data');
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('accessToken');
+    _setLoading(true);    
+    String? token = await AuthHelper.getToken();
 
     if (token == null) {
       // _setLoading(false);
@@ -169,15 +167,12 @@ class UserProvider with ChangeNotifier {
     _setLoading(false);
 
     if (response.statusCode == 200) {
-      print('inside response success');
       var jsonResponse = jsonDecode(response.body);
-      print('response $jsonResponse');
       List<UserListModel> fetchedUsers = (jsonResponse["data"] as List)
           .map((user) => UserListModel.fromJson(user))
           .toList();
 
       _userList = fetchedUsers;
-      print('user list $_userList');
       notifyListeners();
     } else if (response.statusCode == 401) {
       _handleSessionExpired(); // If session expired, logout and go to login screen
@@ -188,11 +183,9 @@ class UserProvider with ChangeNotifier {
 
   // 🔹 Fetch User by ID
   Future<void> fetchUserById(int userId) async {
-    print('start fetch user');
     _setLoading(true);
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('accessToken');
+    String? token = await AuthHelper.getToken();
 
     if (token == null) {
       _setLoading(false);
@@ -223,9 +216,10 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<void> _handleSessionExpired() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('accessToken');
-    await prefs.remove('refreshToken');
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs.remove('accessToken');
+    // await prefs.remove('refreshToken');
+    await AuthHelper.clearToken();
 
     _currentUser = null;
     notifyListeners();

@@ -22,7 +22,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   void initState() {
     super.initState();
-    print('user id ${widget.userId}');
+    // print('user id ${widget.userId}');
     Future.microtask(() => Provider.of<UserProvider>(context, listen: false).fetchUserById(widget.userId));
     
   }
@@ -30,7 +30,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
-    print('selected user ${userProvider.selectedUser!.username}');
+    // print('selected user ${userProvider.selectedUser!.username}');
     // if (user == null) {
     //   return Center(child: Text("No user logged in"));
     // }

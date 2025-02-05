@@ -57,7 +57,6 @@ class CourseProvider with ChangeNotifier {
   }) async {
     final url = Uri.parse(courseCreateUrl);
     final token = await AuthHelper.getToken();
-    print('toke $token');
 
     try {
       var request = http.MultipartRequest("POST", url);
@@ -100,6 +99,59 @@ class CourseProvider with ChangeNotifier {
       }
     } catch (error) {
       print("Error creating course: $error");
+      return false;
+    }
+  }
+
+   // ✅ Update an existing course
+  Future<bool> updateCourse({
+    required int courseId,
+    required String title,
+    required int totalDuration,
+    required String? description,
+    required String recommendation,
+    required bool isOnSale,
+    required double price,
+    required double salePrice,
+    File? coverImage,
+    File? demoVideo,
+  }) async {
+    final url = Uri.parse(courseUpdateUrl(courseId));
+    final token = await AuthHelper.getToken();
+
+    try {
+      var request = http.MultipartRequest("PUT", url);
+      if (token != null) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+
+      request.fields['title'] = title;
+      request.fields['total_duration'] = totalDuration.toString();
+      request.fields['description'] = description ?? "";
+      request.fields['recommendation'] = recommendation;
+      request.fields['is_on_sale'] = isOnSale.toString();
+      request.fields['price'] = price.toString();
+      request.fields['sale_price'] = salePrice.toString();
+
+      if (coverImage != null) {
+        request.files.add(await http.MultipartFile.fromPath('cover_image', coverImage.path));
+      }
+      if (demoVideo != null) {
+        request.files.add(await http.MultipartFile.fromPath('demo_video', demoVideo.path));
+      }
+
+      var response = await request.send();
+      final responseData = await response.stream.bytesToString();
+
+      if (response.statusCode == 200) {
+        fetchCourses();  // Refresh course list after updating
+        return true;
+      } else {
+        print("Course update failed: $responseData");
+        return false;
+      }
+    } catch (error) {
+      print("Error updating course: $error");
       return false;
     }
   }
