@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/providers/cart_provider.dart';
-import 'package:mb_course/route/route_constants.dart';
 import 'package:mb_course/screens/cart/cart_screen.dart';
 import 'package:mb_course/screens/user/user_course.dart';
 import 'package:mb_course/widgets/custom_bottom_nav_bar.dart';
@@ -10,6 +9,7 @@ import 'route/screen_export.dart';
 import 'providers/course_porvider.dart';
 import 'providers/user_provider.dart';
 import 'screens/auth/login_screen.dart';
+import 'services/navigation_service.dart';
 // import 'package:motion_tab_bar_v2/motion-tab-bar.dart'; // Import the MotionTabBar package
 
 void main() {
@@ -37,9 +37,10 @@ class MyApp extends StatelessWidget {
       ],
       child: 
       MaterialApp(
+        navigatorKey: NavigationService.navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Testing App',
-        initialRoute: homeScreenRoute,
+        initialRoute: AppRoutes.home,
         routes: {
           AppRoutes.home: (context) => MainScreen(),
           AppRoutes.login: (context) => UserLoginScreen(),

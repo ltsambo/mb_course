@@ -4,13 +4,14 @@ import 'package:mb_course/widgets/lesson_card.dart';
 import '../../models/course.dart';
 import '../../widgets/video_player_widget.dart';
 
-class CourseDetailScreen extends StatelessWidget {
+class AdminCourseDetailScreen extends StatelessWidget {
   final Course course;
-
-  const CourseDetailScreen({required this.course});
+  
+  const AdminCourseDetailScreen({required this.course});
 
   @override
   Widget build(BuildContext context) {
+    print('demo video ${course.demoVideo}');
     return Scaffold(
       appBar: AppBar(
         title: Text(course.title),
@@ -46,11 +47,7 @@ class CourseDetailScreen extends StatelessWidget {
                   Text('Last updated on: ${course.modifiedOn}'),
                   SizedBox(height: 8),
                   Text('Price: ${course.price}'),
-                  SizedBox(height: 16),
-                  CustomElevatedButton(
-                    text: 'Add to cart', 
-                    onPressed: () => {}),
-                  SizedBox(height: 16),
+                  SizedBox(height: 16),                  
                   Text(
                     'What youll learn',
                     style: TextStyle(

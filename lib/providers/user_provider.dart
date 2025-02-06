@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mb_course/config/api_config.dart';
+import 'package:mb_course/services/navigation_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user.dart';
@@ -286,20 +287,56 @@ class UserProvider with ChangeNotifier {
 class AuthHelper {
   static final _storage = FlutterSecureStorage();
 
-  // ✅ Get stored access token
+  // Get stored access token
   static Future<String?> getToken() async {
     return await _storage.read(key: 'accessToken');
   }
 
-  // ✅ Store token securely
+  // Get stored refresh token
+  static Future<String?> getRefreshToken() async {
+    return await _storage.read(key: 'refreshToken');
+  }
+
+  // Store token securely
   static Future<void> saveToken(String accessToken, String refreshToken) async {
     await _storage.write(key: 'accessToken', value: accessToken);
     await _storage.write(key: 'refreshToken', value: refreshToken);
   }
 
-  // ✅ Clear stored tokens (logout)
+  // Clear stored tokens (logout)
   static Future<void> clearToken() async {
     await _storage.deleteAll();
+  }
+
+  static Future<bool> refreshToken() async {
+    
+    final refreshToken = await getRefreshToken();
+    print('check refresh token $refreshToken');
+    if (refreshToken == null) {
+      // add warning message session has expired
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        NavigationService.navigateToLogin();
+      });
+      return false;
+    } 
+
+    final url = Uri.parse(refreshTokenUrl); // Replace with actual refresh endpoint
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'refresh_token': refreshToken}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      await saveToken(data['access_token'], data['refresh_token']); // Store new tokens
+      return true;
+    } else {
+      print('route to login ${response.statusCode}');
+      await clearToken(); // Clear expired tokens
+      NavigationService.navigateToLogin(); // Redirect to login screen
+      return false;
+    }
   }
 }
 

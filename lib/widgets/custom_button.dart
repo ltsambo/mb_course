@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
+import 'package:mb_course/services/global_methods.dart';
 import 'package:mb_course/widgets/default_text.dart';
 
 class CustomElevatedButton extends StatelessWidget {
@@ -36,4 +37,44 @@ class CustomElevatedButton extends StatelessWidget {
       child: DefaultTextWg(text: text, fontColor: color ?? whiteColor,)
     );    
   }
+}
+
+class CustomDeleteBtm extends StatelessWidget {
+  final Function fct;
+  final String lastDate;
+
+  const CustomDeleteBtm({super.key, required this.fct, required this.lastDate});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        DefaultTextWg(
+          text: "last update: $lastDate",
+          fontColor: Colors.grey,
+        ),
+        ElevatedButton(
+          onPressed: () {            
+            GlobalMethods.warningDialog(
+            title: 'Confirm?',
+            subtitle: 'Are you sure to delete?',
+            fct: () async {
+              
+            },
+            context: context);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red[100],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: DefaultTextWg(
+            text: "Delete",
+            fontColor: Colors.red,
+          )),
+      ],
+    );              
+  }  
 }

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/providers/user_provider.dart';
+import 'package:mb_course/services/global_methods.dart';
+import 'package:mb_course/widgets/custom_button.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -57,7 +59,8 @@ class _UpdateCourseScreenState extends State<UpdateCourseScreen> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      final success = await Provider.of<CourseProvider>(context, listen: false).updateCourse(
+      final success = await Provider.of<CourseProvider>(context, listen: false)
+          .updateCourse(
         courseId: widget.course.id,
         title: _title,
         totalDuration: _totalDuration,
@@ -71,10 +74,32 @@ class _UpdateCourseScreenState extends State<UpdateCourseScreen> {
       );
 
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Course updated successfully!")));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Course updated successfully!")));
         Navigator.pop(context);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to update course.")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Failed to update course.")));
+      }
+    }
+  }
+
+  void _inactiveCourse() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      final success = await Provider.of<CourseProvider>(context, listen: false)
+          .inactiveCourse(
+        courseId: widget.course.id,
+        isActive: false,
+      );
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Course updated successfully!")));
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Failed to update course.")));
       }
     }
   }
@@ -82,7 +107,6 @@ class _UpdateCourseScreenState extends State<UpdateCourseScreen> {
   @override
   void initState() {
     super.initState();
-    print('recommendation ${widget.course.recommendation}');
     _title = widget.course.title;
     _recommendation = widget.course.recommendation ?? "";
     _totalDuration = widget.course.totalDuration;
@@ -91,7 +115,7 @@ class _UpdateCourseScreenState extends State<UpdateCourseScreen> {
     _price = widget.course.price;
     _salePrice = widget.course.salePrice;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<UserProvider>(context);
@@ -117,101 +141,110 @@ class _UpdateCourseScreenState extends State<UpdateCourseScreen> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-          child: Column(
-            children: [
-              CustomTextFormField(
-              initialValue: _title,
-              label: "Title",
-              onSaved: (value) => _title = value!,
-            ),
-            const SizedBox(height: 12),
-            CustomTextFormField(
-              initialValue: _description,
-              label: "Description",
-              onSaved: (value) => _description = value,
-            ),
-            const SizedBox(height: 12),                        
-            CustomTextFormField(
-              initialValue: _recommendation,
-              label: "Recommendation", 
-              onSaved: (value) => _recommendation = value!,
-            ),
-            const SizedBox(height: 12),                        
-            CustomTextFormField(
-              initialValue: _price.toStringAsFixed(0),
-              label: "Price", 
-              keyboardType: TextInputType.number,
-              onSaved: (value) => _price= double.tryParse(value!) ?? 0.0,
-            ),
-            const SizedBox(height: 12),
-            CustomTextFormField(
-                  initialValue: _salePrice.toStringAsFixed(0),
-                  label: "Sale Price",
-                  keyboardType: TextInputType.number,
-                  onSaved: (value) => _salePrice = double.tryParse(value!) ?? 0.0,
-                ),
-            SwitchListTile(
-                  title: Text("Is on Sale?"),
-                  value: _isOnSale,
-                  onChanged: (value) => setState(() => _isOnSale = value),
-                ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-                  onPressed: _pickCoverImage,
-                  child: Text(_coverImage == null ? "Select Cover Image" : "Cover: ${_coverImage!.path.split('/').last}"),
-                ),
-                if (_coverImage != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    "Selected: ${_coverImage!.path}",
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CustomTextFormField(
+                    initialValue: _title,
+                    label: "Title",
+                    onSaved: (value) => _title = value!,
                   ),
-                ),
-            const SizedBox(height: 12),
-            // Role Dropdown
-            ElevatedButton(
-                  onPressed: _pickDemoVideo,
-                  child: Text(_demoVideo == null ? "Select Demo Video" : "Video: ${_demoVideo!.path.split('/').last}"),
-                ),     
-                if (_demoVideo != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      "Selected: ${_demoVideo!.path}",
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                  const SizedBox(height: 12),
+                  CustomTextFormField(
+                    initialValue: _description,
+                    label: "Description",
+                    onSaved: (value) => _description = value,
+                  ),
+                  const SizedBox(height: 12),
+                  CustomTextFormField(
+                    initialValue: _recommendation,
+                    label: "Recommendation",
+                    onSaved: (value) => _recommendation = value!,
+                  ),
+                  const SizedBox(height: 12),
+                  CustomTextFormField(
+                    initialValue: _price.toStringAsFixed(0),
+                    label: "Price",
+                    keyboardType: TextInputType.number,
+                    onSaved: (value) => _price = double.tryParse(value!) ?? 0.0,
+                  ),
+                  const SizedBox(height: 12),
+                  CustomTextFormField(
+                    initialValue: _salePrice.toStringAsFixed(0),
+                    label: "Sale Price",
+                    keyboardType: TextInputType.number,
+                    onSaved: (value) =>
+                        _salePrice = double.tryParse(value!) ?? 0.0,
+                  ),
+                  SwitchListTile(
+                    title: Text("Is on Sale?"),
+                    value: _isOnSale,
+                    onChanged: (value) => setState(() => _isOnSale = value),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: _pickCoverImage,
+                    child: Text("Select Cover Image"),
+                  ),
+                  if (_coverImage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        "Selected: ${_coverImage!.path.split('/').last}",
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
                     ),
+                  const SizedBox(height: 10),
+                  // Role Dropdown
+                  ElevatedButton(
+                    onPressed: _pickDemoVideo,
+                    child: Text("Select Video"),
+                    // Text(_demoVideo == null ? "Select Demo Video" : "Video: ${_demoVideo!.path.split('/').last}"),
                   ),
-            SizedBox(height: 12),
-            // Select Image Button            
-            authProvider.isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _submitForm,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor, // Button color
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                minimumSize: const Size(double.infinity, 50),
-              ),
-              child: Text(
-                "Update",
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                  if (_demoVideo != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        "Selected: ${_demoVideo!.path.split('/').last}}",
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                    ),                  
+                  SizedBox(height: 12),
+                  // Select Image Button
+                  authProvider.isLoading
+                      ? CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: _submitForm,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor, // Button color
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            minimumSize: const Size(double.infinity, 50),
+                          ),
+                          child: Text(
+                            "Update",
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  CustomDeleteBtm(fct: () {
+                    _inactiveCourse;
+                  }, lastDate: GlobalMethods.formatDate(widget.course.modifiedOn))
+                ],
               ),
             ),
-            ],
-          ),        
-        ),)
-      ),
+          )
+        ),
     );
   }
 
@@ -232,7 +265,4 @@ class _UpdateCourseScreenState extends State<UpdateCourseScreen> {
   //     ),
   //   );
   // }
-
-  
 }
-

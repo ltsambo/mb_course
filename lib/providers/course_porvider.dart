@@ -23,7 +23,7 @@ class CourseProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        print('response data $responseData');
+        // print('response data $responseData');
         // _totalCourses = int.tryParse(responseData['data']['total_courses'].toString()) ?? 0; // Extract total course count
         // print('total courses $totalCourses');
         _courses = List<Course>.from(
@@ -33,8 +33,10 @@ class CourseProvider with ChangeNotifier {
         //     .map((course) => Course.fromJson(course))
         //     .toList();
         notifyListeners();
-      } else {
-        throw Exception('Failed to load courses');
+      } else if (response.statusCode == 500) {
+        throw Exception('Database connection falied ${response.statusCode}');
+      }else {
+        throw Exception('Failed to load courses ${response.statusCode}');
       }
     } catch (error) {
       print('error $error');
@@ -42,7 +44,7 @@ class CourseProvider with ChangeNotifier {
     }
   }
 
-  // ✅ Function to create a new course with file upload
+  // Function to create a new course with file upload
   Future<bool> createCourse({
     required String title,
     required int totalDuration,
@@ -103,7 +105,7 @@ class CourseProvider with ChangeNotifier {
     }
   }
 
-   // ✅ Update an existing course
+   // Update an existing course
   Future<bool> updateCourse({
     required int courseId,
     required String title,
@@ -146,6 +148,25 @@ class CourseProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         fetchCourses();  // Refresh course list after updating
         return true;
+      } else if (response.statusCode == 401) {      
+        bool refreshed = await AuthHelper.refreshToken();
+        if (refreshed) {
+          return updateCourse(
+              courseId: courseId,
+              title: title,
+              totalDuration: totalDuration,
+              description: description,
+              recommendation: recommendation,
+              isOnSale: isOnSale,
+              price: price,
+              salePrice: salePrice,
+              coverImage: coverImage,
+              demoVideo: demoVideo,
+            );            
+          } 
+          else {
+            return false;
+          }
       } else {
         print("Course update failed: $responseData");
         return false;
@@ -156,10 +177,54 @@ class CourseProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> inactiveCourse({
+    required int courseId,
+    required bool isActive,
+  }) async {
+    final url = Uri.parse(courseUpdateUrl(courseId));
+    final token = await AuthHelper.getToken();
+
+    try {
+      var request = http.MultipartRequest("PUT", url);
+      if (token != null) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+      
+      request.fields['is_active'] = isActive.toString();
+
+      var response = await request.send();
+      final responseData = await response.stream.bytesToString();
+
+      if (response.statusCode == 200) {
+        fetchCourses();  // Refresh course list after updating
+        return true;
+      } else if (response.statusCode == 401) {      
+        bool refreshed = await AuthHelper.refreshToken();
+        if (refreshed) {
+          return inactiveCourse(
+              courseId: courseId,
+              isActive: false
+            );            
+          } 
+          else {
+            return false;
+          }
+      } else {
+        print("Course delete failed: $responseData");
+        return false;
+      }
+    } catch (error) {
+      print("Error delete course: $error");
+      return false;
+    }
+  }
+
   Course findProdById(String productId) {
     return _courses.firstWhere((element) => element.id == productId);
   }
 }
+
+
 
 // class CourseProvider with ChangeNotifier {
 //   final List<Course> _courses = [

@@ -7,7 +7,8 @@ class Course {
   final String? recommendation;
   final int totalDuration;
   final String? description;
-  final String coverImage;
+  final String? coverImage;
+  final String? demoVideo;
   final bool isOnSale;
   final double price;
   final double salePrice;
@@ -22,7 +23,8 @@ class Course {
     this.recommendation,
     required this.totalDuration,
     this.description,
-    required this.coverImage,
+    this.coverImage,
+    this.demoVideo,
     required this.isOnSale,
     required this.price,
     required this.salePrice,
@@ -39,7 +41,8 @@ class Course {
       recommendation: json['recommendation'],
       totalDuration: json['total_duration'],
       description: json['description'] ?? "No description available",
-      coverImage: json['cover_image'] ?? "http://10.10.11.11:8000/media/course/Queries%20for%20design%20issues/no-image-available.jpeg",
+      coverImage: json['cover_image'],
+      demoVideo: json['demo_video'],
       isOnSale: json['is_on_sale'],
       price: double.tryParse(json['price'].toString()) ?? 0.0,
       salePrice: double.tryParse(json['sale_price'].toString()) ?? 0.0,

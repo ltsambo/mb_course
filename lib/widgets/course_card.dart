@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../models/course.dart';
 import '../providers/cart_provider.dart';
+import '../screens/course/admin_course_details.dart';
 import '../screens/course/course_detail_screen.dart';
 import '../screens/course/course_update.dart';
 
@@ -17,7 +18,9 @@ class CourseCard extends StatelessWidget {
   Widget build(BuildContext context) {    
     return Card(
       child: ListTile(
-        leading: Image.network(course.coverImage, width: 50, height: 50),
+        leading: course.coverImage == null
+                ? Image.asset('assets/not-available.jpeg', width: 50, height: 50, fit: BoxFit.cover)
+                : Image.network(course.coverImage!, width: 50, height: 50, fit: BoxFit.cover),// Image.network(course.coverImage!, width: 50, height: 50),
         title: DefaultTextWg(text: course.title),
         isThreeLine: true,        
         subtitle: Column(
@@ -63,9 +66,11 @@ class AdminCourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {    
+    print('admin course card ${course.coverImage}');
     return Card(
       child: ListTile(
-        leading: Image.network(course.coverImage, width: 50, height: 50),
+        leading: course.coverImage != null ? Image.network(course.coverImage!, width: 50, height: 50, fit: BoxFit.cover)
+                : Image.asset('assets/not-available.jpeg', width: 50, height: 50, fit: BoxFit.cover),
         title: DefaultTextWg(text: course.title),
         isThreeLine: true,        
         subtitle: Column(
@@ -91,7 +96,7 @@ class AdminCourseCard extends StatelessWidget {
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => CourseDetailScreen(course: course),
+            builder: (_) => AdminCourseDetailScreen(course: course),
           ),
         ),
       ),

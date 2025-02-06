@@ -1,6 +1,7 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:grocery_app/consts/firebase_consts.dart';
 import 'package:mb_course/consts/consts.dart';
@@ -144,6 +145,16 @@ class GlobalMethods {
       // );
     } catch (error) {
       errorDialog(subtitle: error.toString(), context: context);
+    }
+  }
+
+  static String formatDate(String dateString) {
+    try {
+      DateTime parsedDate = DateTime.parse(dateString);
+      String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
+      return formattedDate;
+    } catch (e) {
+      return 'Invalid Date';
     }
   }
 }
