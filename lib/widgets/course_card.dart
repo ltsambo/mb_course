@@ -40,11 +40,12 @@ class CourseCard extends StatelessWidget {
             icon: Icon(Icons.add_shopping_cart, color: primaryColor),
             onPressed: () {
               final cartProvider = Provider.of<CartProvider>(context, listen: false);
-              cartProvider.addCoursesToCart(
+              cartProvider.addCourseToCart(
                 courseId: course.id.toString(),
-                price: course.price
+                price: course.price,
+                context: context
               );
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added to cart!')));
+              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added course to cart!')));
             },
           ),
         ),

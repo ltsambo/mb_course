@@ -84,24 +84,18 @@ class _UpdateCourseScreenState extends State<UpdateCourseScreen> {
     }
   }
 
-  void _inactiveCourse() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      final success = await Provider.of<CourseProvider>(context, listen: false)
-          .inactiveCourse(
-        courseId: widget.course.id,
-        isActive: false,
-      );
-
-      if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Course updated successfully!")));
-        Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Failed to update course.")));
-      }
-    }
+  void _inactiveCourse() async {    
+    
+    final success = await Provider.of<CourseProvider>(context, listen: false)
+        .deactivateCourse(widget.course.id);      
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Course deleted successfully!")));
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Failed to delete course.")));
+    }    
   }
 
   @override
@@ -237,8 +231,8 @@ class _UpdateCourseScreenState extends State<UpdateCourseScreen> {
                   SizedBox(
                     height: 12,
                   ),
-                  CustomDeleteBtm(fct: () {
-                    _inactiveCourse;
+                  CustomDeleteBtm(fct: () async {                    
+                    _inactiveCourse();
                   }, lastDate: GlobalMethods.formatDate(widget.course.modifiedOn))
                 ],
               ),

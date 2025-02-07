@@ -60,7 +60,7 @@ class CustomDeleteBtm extends StatelessWidget {
             title: 'Confirm?',
             subtitle: 'Are you sure to delete?',
             fct: () async {
-              
+              fct();
             },
             context: context);
           },

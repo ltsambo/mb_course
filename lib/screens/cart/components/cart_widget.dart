@@ -18,7 +18,8 @@ import '../../../services/utlis.dart';
 // import '../../providers/wishlist_provider.dart';
 
 class CartWidget extends StatefulWidget {
-  const CartWidget({Key? key}) : super(key: key);
+  final Map<String, dynamic> item;
+  const CartWidget({Key? key, required this.item}) : super(key: key);
   
   @override
   State<CartWidget> createState() => _CartWidgetState();
@@ -42,13 +43,13 @@ class _CartWidgetState extends State<CartWidget> {
   Widget build(BuildContext context) {
     // final Color color = Utils(context).color;
     Size size = Utils(context).getScreenSize;
-    final productProvider = Provider.of<CourseProvider>(context);
-    final cartModel = Provider.of<CartModel>(context);
-    final getCurrProduct = productProvider.findProdById(cartModel.courseId);
-    double usedPrice = getCurrProduct.isOnSale
-        ? getCurrProduct.salePrice
-        : getCurrProduct.price;
-    final cartProvider = Provider.of<CartProvider>(context);
+    // final courseProvider = Provider.of<CourseProvider>(context);
+    // final cartModel = Provider.of<CartItemModel>(context);
+    // final getCurrProduct = courseProvider.findProdById(cartModel.courseId);
+    // double usedPrice = getCurrProduct.isOnSale
+    //     ? getCurrProduct.salePrice
+    //     : getCurrProduct.price;
+    // final cartProvider = Provider.of<CartProvider>(context);
     // final wishlistProvider = Provider.of<WishlistProvider>(context);
     // bool? isInWishlist =
     //     wishlistProvider.getWishlistItems.containsKey(getCurrProduct.id);
@@ -70,13 +71,13 @@ class _CartWidgetState extends State<CartWidget> {
                 child: Row(
                   children: [
                     Container(
-                      height: size.width * 0.25,
+                      height: size.width * 0.20,
                       width: size.width * 0.25,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: FancyShimmerImage(
-                        imageUrl: 'https://cdn.pixabay.com/photo/2014/05/07/15/19/django-339744_1280.png',
+                        imageUrl: widget.item['course']['cover_image'],
                         boxFit: BoxFit.fill,
                       ),
                     ),
@@ -84,8 +85,8 @@ class _CartWidgetState extends State<CartWidget> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        DefaultTextWg(text: getCurrProduct.title),
-                        DefaultTextWg(text: '\$${(usedPrice).toStringAsFixed(2)}', fontWeight: FontWeight.normal,),
+                        DefaultTextWg(text: widget.item['course']['title']),
+                        DefaultTextWg(text: '\$${widget.item['course']['price']}', fontWeight: FontWeight.normal,),
                         const SizedBox(
                           height: 16.0,
                         ),                        
@@ -98,7 +99,7 @@ class _CartWidgetState extends State<CartWidget> {
                         children: [
                           InkWell(
                             onTap: () async {
-                              await cartProvider.removeCourse(cartModel.id, courseId: cartModel.courseId);
+                              // await cartProvider.removeCourse(cartModel.id, courseId: cartModel.courseId);
                             },
                             child: const Icon(
                               CupertinoIcons.bin_xmark,

@@ -10,14 +10,26 @@ import '../../services/global_methods.dart';
 import '../core/empty_screen.dart';
 import 'components/cart_widget.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch cart data when the screen loads
+    Provider.of<CartProvider>(context, listen: false).fetchUserCart(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);    
-    final cartItemsList = cartProvider.getCartItems.values.toList().reversed.toList();
-    return cartItemsList.isEmpty
+    // final cartItemsList = cartProvider.cartUserCourses.values.toList().reversed.toList();
+    return cartProvider.cartUserCourses.isEmpty
         ? EmptyScreen(
             title: 'Your cart is empty',
             subtitle: 'Add something and make me happy :)',
@@ -37,7 +49,7 @@ class CartScreen extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: primaryColor,
               elevation: 0,
-              title: DefaultTextWg(text: 'Cart (${cartItemsList.length})', fontSize: 24, fontColor: whiteColor,),                   
+              title: DefaultTextWg(text: 'Cart (${cartProvider.cartUserCourses.length})', fontSize: 24, fontColor: whiteColor,),                   
                 actions: [
                   IconButton(
                     onPressed: () {
@@ -45,7 +57,7 @@ class CartScreen extends StatelessWidget {
                         title: 'Empty your cart?',
                         subtitle: 'Are you sure?',
                         fct: () async {
-                          await cartProvider.clearOnlineCart();
+                          // await cartProvider.clearOnlineCart();
                           cartProvider.clearLocalCart();
                         },
                       context: context);
@@ -63,11 +75,10 @@ class CartScreen extends StatelessWidget {
                   // _checkout(ctx: context),
                   Expanded(
                     child: ListView.builder(
-                      itemCount: cartItemsList.length,
+                      itemCount: cartProvider.cartUserCourses.length,
                       itemBuilder: (ctx, index) {
-                        return ChangeNotifierProvider.value(
-                            value: cartItemsList[index],
-                            child: CartWidget());
+                        final item = cartProvider.cartUserCourses[index];
+                        return CartWidget(item: item,);
                       },
                     ),
                   ),
@@ -79,3 +90,4 @@ class CartScreen extends StatelessWidget {
           );
   }
 }
+

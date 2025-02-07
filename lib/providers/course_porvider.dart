@@ -95,6 +95,25 @@ class CourseProvider with ChangeNotifier {
       if (response.statusCode == 201) {
         fetchCourses();
         return true;
+      } else if (response.statusCode == 401) {      
+        bool refreshed = await AuthHelper.refreshToken();
+        if (refreshed) {
+          return createCourse(
+              title: title,
+              instructorUsername: instructorUsername,
+              totalDuration: totalDuration,
+              description: description,
+              recommendation: recommendation,
+              isOnSale: isOnSale,
+              price: price,
+              salePrice: salePrice,
+              coverImage: coverImage,
+              demoVideo: demoVideo,
+            );            
+          } 
+          else {
+            return false;
+          }
       } else {
         print("Course creation failed: $responseData");
         return false;
@@ -177,47 +196,41 @@ class CourseProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> inactiveCourse({
-    required int courseId,
-    required bool isActive,
-  }) async {
-    final url = Uri.parse(courseUpdateUrl(courseId));
-    final token = await AuthHelper.getToken();
+  Future<bool> deactivateCourse(int courseId) async {
+  final url = Uri.parse(courseDeleteUrl(courseId));
+  final token = await AuthHelper.getToken();
 
-    try {
-      var request = http.MultipartRequest("PUT", url);
-      if (token != null) {
-        request.headers['Authorization'] = 'Bearer $token';
-      }
-      
-      request.fields['is_active'] = isActive.toString();
-
-      var response = await request.send();
-      final responseData = await response.stream.bytesToString();
-
-      if (response.statusCode == 200) {
-        fetchCourses();  // Refresh course list after updating
-        return true;
-      } else if (response.statusCode == 401) {      
+  try {
+    final response = await http.patch(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'is_active': false}),  // 🔥 Only sending is_active field
+    );
+    print('inside delete fun');
+    if (response.statusCode == 200) {
+      print("Course deactivated successfully");
+      fetchCourses();
+      return true;
+    } else if (response.statusCode == 401) {      
         bool refreshed = await AuthHelper.refreshToken();
         if (refreshed) {
-          return inactiveCourse(
-              courseId: courseId,
-              isActive: false
-            );            
-          } 
-          else {
-            return false;
-          }
+          return deactivateCourse(courseId);            
+        } 
+        else {
+          return false;
+        }
       } else {
-        print("Course delete failed: $responseData");
-        return false;
-      }
-    } catch (error) {
-      print("Error delete course: $error");
+      print("Failed to deactivate course: ${response.body}");
       return false;
     }
+  } catch (e) {
+    print("Error deactivating course: $e");
+    return false;
   }
+}
 
   Course findProdById(String productId) {
     return _courses.firstWhere((element) => element.id == productId);

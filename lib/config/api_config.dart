@@ -24,3 +24,10 @@ String courseCreateUrl = "$_baseUrl/course/create/";
 String courseUpdateUrl(int courseId) {
   return "$_baseUrl/course/update/$courseId/";
 }
+String courseDeleteUrl(int courseId) {
+  return "$_baseUrl/course/delete/$courseId/";
+}
+
+// Cart
+String addToCartUrl = "$_baseUrl/cart/add/";
+String fetchUserCartUrl = "$_baseUrl/cart/";
