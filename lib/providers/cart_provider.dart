@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mb_course/config/api_config.dart';
 import 'package:mb_course/providers/user_provider.dart';
+import 'package:mb_course/screens/course/course_list.dart';
 import '../models/cart.dart';
 import 'package:http/http.dart' as http;
 
@@ -207,6 +208,55 @@ class CartProvider with ChangeNotifier {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error adding course to cart: $e')),
+      );
+    }
+  }
+
+  Future<void> checkout(BuildContext context) async {
+    final url = Uri.parse(checkoutUrl);
+    final token = await AuthHelper.getToken();
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        _cartUserCourses.clear();  // Clear cart locally after successful checkout
+        notifyListeners();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Checkout successful! Order ID: ${data['data']['order_id']}')),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CourseListScreen(), 
+          ),
+        );
+      } else if (response.statusCode == 401) {      
+        bool refreshed = await AuthHelper.refreshToken();
+        if (refreshed) {
+          return checkout(context);
+        } 
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Session Expired!')),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Checkout failed: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error during checkout: $e')),
       );
     }
   }

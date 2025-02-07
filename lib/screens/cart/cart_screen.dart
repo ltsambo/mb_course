@@ -83,7 +83,9 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ),
                   DefaultTextWg(text: cartProvider.totalPrice.toString()),
-                  CustomElevatedButton(text: 'Checkout', onPressed: () {})
+                  CustomElevatedButton(text: 'Checkout', onPressed: () {
+                    cartProvider.checkout(context);
+                  })
                 ],
               ),              
             )

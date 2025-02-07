@@ -35,3 +35,6 @@ String cartCourseRemoveUrl(int cart_item_id) {
   return "$_baseUrl/cart/delete/$cart_item_id/";
 }
 String cartCourseRemoveAllUrl = "$_baseUrl/cart/delete_all/";
+
+// Cehckout
+String checkoutUrl = "$_baseUrl/order/checkout/";

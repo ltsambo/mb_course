@@ -28,7 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
-
+    print('user provider ${userProvider.currentUser!.role}');
     return Scaffold(
       backgroundColor: backgroundColor, // Light beige background
       appBar: AppBar(
@@ -42,6 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: userProvider.isAuthenticated ? ListView(
           children: [
             // Management Section
+            userProvider.currentUser!.role == "admin" ?
             BuildSectionCardWg(
               title: "Management",
               children: [
@@ -138,7 +139,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ],
-            ),
+            ) : Text(""),
             const SizedBox(height: 16),
             // My Information Section
             BuildSectionCardWg(
