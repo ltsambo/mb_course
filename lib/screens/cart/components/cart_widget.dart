@@ -11,7 +11,6 @@ import 'package:mb_course/providers/course_porvider.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/cart.dart';
 import '../../../providers/cart_provider.dart';
 import '../../../services/utlis.dart';
 // import '../../providers/cart_provider.dart';
@@ -26,7 +25,7 @@ class CartWidget extends StatefulWidget {
 }
 
 class _CartWidgetState extends State<CartWidget> {
-  final _quantityTextController = TextEditingController();
+  
   @override
   void initState() {
     // _quantityTextController.text = widget.q.toString();
@@ -34,8 +33,7 @@ class _CartWidgetState extends State<CartWidget> {
   }
 
   @override
-  void dispose() {
-    _quantityTextController.dispose();
+  void dispose() {    
     super.dispose();
   }
 
@@ -49,10 +47,12 @@ class _CartWidgetState extends State<CartWidget> {
     // double usedPrice = getCurrProduct.isOnSale
     //     ? getCurrProduct.salePrice
     //     : getCurrProduct.price;
-    // final cartProvider = Provider.of<CartProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
     // final wishlistProvider = Provider.of<WishlistProvider>(context);
     // bool? isInWishlist =
     //     wishlistProvider.getWishlistItems.containsKey(getCurrProduct.id);
+
+    print('item ${widget.item}');
     return GestureDetector(
       onTap: () {
         // Navigator.pushNamed(context, ProductDetails.routeName,
@@ -99,7 +99,8 @@ class _CartWidgetState extends State<CartWidget> {
                         children: [
                           InkWell(
                             onTap: () async {
-                              // await cartProvider.removeCourse(cartModel.id, courseId: cartModel.courseId);
+                              print('course id ${widget.item}');
+                              cartProvider.deleteCartItem(widget.item['id'], context);
                             },
                             child: const Icon(
                               CupertinoIcons.bin_xmark,

@@ -37,15 +37,13 @@ class CartProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print('output data $data');
         if (data['data'] is List){
           _cartUserCourses = List<Map<String, dynamic>>.from(data['data']);
         }
         else {
           _cartUserCourses = [];
         }
-       
-        print('cart course $_cartUserCourses');
+
         notifyListeners();  // Notify UI about cart updates
       } else if (response.statusCode == 401) {      
         bool refreshed = await AuthHelper.refreshToken();
@@ -70,28 +68,90 @@ class CartProvider with ChangeNotifier {
     }
   }
 
-  // Future<void> removeCourse(String id, 
-  //     {required courseId
-  //   }) async {
-  //   // final User? user = authInstance.currentUser;
-  //   // await userCollection.doc(user!.uid).update({
-  //   //   'userCart': FieldValue.arrayRemove([
-  //   //     {'cartId': cartId, 'productId': productId, 'quantity': quantity}
-  //   //   ])
-  //   // });
-  //   _cartItems.remove(courseId);
-  //   await fetchUserCart();
-  //   notifyListeners();
-  // }
+  Future<void> deleteCartItem(int cart_item_id, BuildContext context) async {
+    final url = Uri.parse(cartCourseRemoveUrl(cart_item_id));
+    final token = await AuthHelper.getToken();
 
-  // Future<void> clearOnlineCart() async {
-  //   final User? user = authInstance.currentUser;
-  //   await userCollection.doc(user!.uid).update({
-  //     'userCart': [],
-  //   });
-  //   _cartItems.clear();
-  //   notifyListeners();
-  // }
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Remove item locally after successful deletion
+        _cartUserCourses.removeWhere((item) => item['id'] == cart_item_id);
+        notifyListeners();  // Notify UI about the change
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Course removed from cart successfully!')),
+        );
+      } else if (response.statusCode == 401) {      
+        bool refreshed = await AuthHelper.refreshToken();
+        if (refreshed) {
+          return deleteCartItem(cart_item_id, context);           
+        } 
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Session Expired!')),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${response.statusCode} Failed to remove course from cart.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error removing course from cart: $e')),
+      );
+    }
+  }
+
+  Future<void> deleteAllCartItems(BuildContext context) async {
+    final url = Uri.parse(cartCourseRemoveAllUrl);
+    final token = await AuthHelper.getToken();
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        _cartUserCourses.clear();  // Clear cart locally
+        notifyListeners();   // Update UI
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('All courses removed from cart successfully!')),
+        );
+      } else if (response.statusCode == 401) {      
+        bool refreshed = await AuthHelper.refreshToken();
+        if (refreshed) {
+          return deleteAllCartItems(context);           
+        } 
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Session Expired!')),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to clear cart.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error clearing cart: $e')),
+      );
+    }
+  }
 
   void clearLocalCart() {
     _cartItems.clear();
@@ -152,7 +212,7 @@ class CartProvider with ChangeNotifier {
   }
 
   double get totalPrice {
-    return _cartItems.values.fold(0, (sum, item) => sum + item.price);
+    return _cartUserCourses.fold(0, (sum, item) => sum + item['price']);
   }
 
   int get cartCount => _cartItems.length;

@@ -58,7 +58,7 @@ class _CartScreenState extends State<CartScreen> {
                         subtitle: 'Are you sure?',
                         fct: () async {
                           // await cartProvider.clearOnlineCart();
-                          cartProvider.clearLocalCart();
+                          cartProvider.deleteAllCartItems(context);
                         },
                       context: context);
                     },

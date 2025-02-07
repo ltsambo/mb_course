@@ -31,3 +31,7 @@ String courseDeleteUrl(int courseId) {
 // Cart
 String addToCartUrl = "$_baseUrl/cart/add/";
 String fetchUserCartUrl = "$_baseUrl/cart/";
+String cartCourseRemoveUrl(int cart_item_id) {
+  return "$_baseUrl/cart/delete/$cart_item_id/";
+}
+String cartCourseRemoveAllUrl = "$_baseUrl/cart/delete_all/";
