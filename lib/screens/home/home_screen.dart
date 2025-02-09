@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 24,
               ),
-              CourseCarousel(courses: courses),
+              // CourseCarousel(courses: courses),
               SizedBox(
                 height: 20,
               ),

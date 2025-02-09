@@ -1,9 +1,6 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'package:mb_course/config/api_config.dart';
 import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/providers/user_provider.dart';
 import 'package:mb_course/widgets/default_text.dart';

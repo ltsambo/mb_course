@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:mb_course/widgets/lesson_card.dart';
 import '../../models/course.dart';
-import '../../widgets/video_player_widget.dart';
 
 class AdminCourseDetailScreen extends StatelessWidget {
   final Course course;

@@ -6,7 +6,7 @@ import '../providers/user_provider.dart';
 /// Common function to handle logout
 void handleLogout(BuildContext context) {
   // Clear user session using UserProvider
-  Provider.of<UserProvider>(context, listen: false).logout();
+  Provider.of<UserProvider>(context, listen: false).logout(context);
 
   // Navigate to the login screen
   Navigator.pushReplacementNamed(context, '/');

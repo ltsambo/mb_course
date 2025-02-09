@@ -184,7 +184,7 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                       );
 
                       if (authProvider.user != null) {
-                        print('auth pro ${authProvider.user}');
+                        // print('auth pro ${authProvider.user}');
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (context) => MainScreen()),

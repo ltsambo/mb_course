@@ -6,11 +6,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mb_course/config/api_config.dart';
 import 'package:mb_course/providers/user_provider.dart';
-import 'package:mb_course/screens/course/course_list.dart';
+import 'package:provider/provider.dart';
 import '../models/cart.dart';
 import 'package:http/http.dart' as http;
 
-class CartProvider with ChangeNotifier {
+import '../screens/order/order_screen.dart';
+
+class CartProvider with ChangeNotifier {  
   final Map<String, CartItemModel> _cartItems = {};
   final List<int> _cartCourses = [];
   List<Map<String, dynamic>> _cartUserCourses = [];
@@ -23,7 +25,8 @@ class CartProvider with ChangeNotifier {
   }
   
   // final userCollection = FirebaseFirestore.instance.collection('users');
-  Future<void> fetchUserCart(BuildContext context) async {
+  Future<void> fetchUserCart(BuildContext context, {bool retry = true}) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     final url = Uri.parse(fetchUserCartUrl);
     final token = await AuthHelper.getToken();
 
@@ -46,15 +49,17 @@ class CartProvider with ChangeNotifier {
         }
 
         notifyListeners();  // Notify UI about cart updates
-      } else if (response.statusCode == 401) {      
-        bool refreshed = await AuthHelper.refreshToken();
-        if (refreshed) {
-          return fetchUserCart(context);           
-        } 
-        else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Session Expired!')),
-          );
+      } else if (response.statusCode == 401 && retry) {      
+        if (userProvider.isAuthenticated) {
+          bool refreshed = await AuthHelper.refreshToken();
+          if (refreshed) {
+            return fetchUserCart(context, retry: false);  // Retry after refreshing token
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Session Expired! Please log in again.')),
+            );
+            userProvider.logout(context);  // Log out the user if refresh fails
+          }
         }
       } else {
         print('Error: ${response.statusCode}');
@@ -156,6 +161,7 @@ class CartProvider with ChangeNotifier {
 
   void clearLocalCart() {
     _cartItems.clear();
+    _cartUserCourses.clear();
     notifyListeners();
   }
 
@@ -231,12 +237,12 @@ class CartProvider with ChangeNotifier {
         notifyListeners();
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Checkout successful! Order ID: ${data['data']['order_id']}')),
+          SnackBar(content: Text('Checkout successful! Order ID: ${data['data']['order_uuid']}')),
         );
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CourseListScreen(), 
+            builder: (context) => OrderListScreen(), 
           ),
         );
       } else if (response.statusCode == 401) {      

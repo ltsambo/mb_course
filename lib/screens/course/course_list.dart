@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
-import 'package:mb_course/route/screen_export.dart';
+// import 'package:mb_course/route/screen_export.dart';
 import 'package:mb_course/screens/course/course_create.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';

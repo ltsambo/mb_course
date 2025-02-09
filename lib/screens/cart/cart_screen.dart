@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/main.dart';
-import 'package:mb_course/widgets/custom_button.dart';
+import 'package:mb_course/providers/user_provider.dart';
+import 'package:mb_course/screens/auth/login_screen.dart';
+// import 'package:mb_course/widgets/custom_button.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../consts/consts.dart';
 import '../../providers/cart_provider.dart';
 import '../../services/global_methods.dart';
-import '../core/empty_screen.dart';
+// import '../core/empty_screen.dart';
 import 'components/cart_widget.dart';
 
 class CartScreen extends StatefulWidget {
@@ -21,31 +23,84 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch cart data when the screen loads
     Provider.of<CartProvider>(context, listen: false).fetchUserCart(context);
   }
 
+  // Future<void> _checkAndFetchCart() async {
+  //    // Check if user is logged in
+  //   bool isLoggedIn = await AuthHelper.isLoggedIn(); 
+  //   if (isLoggedIn) {
+  //     Provider.of<CartProvider>(context, listen: false).fetchUserCart(context);
+  //   }
+  //   //  else {      
+  //   //   print("User is not logged in. Cart will not be fetched.");
+  //   // }
+  // }
+
   @override
   Widget build(BuildContext context) {
-    final cartProvider = Provider.of<CartProvider>(context);    
+    final cartProvider = Provider.of<CartProvider>(context);  
+    final userProvider = Provider.of<UserProvider>(context);  
     // final cartItemsList = cartProvider.cartUserCourses.values.toList().reversed.toList();
     return cartProvider.cartUserCourses.isEmpty
-        ? EmptyScreen(
-            title: 'Your cart is empty',
-            subtitle: 'Add something and make me happy :)',
-            buttonText: 'Explore now',
-            imagePath: 'assets/cart_image.jpeg',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MainScreen(),
-                ),
-              );
-              // Navigator.pushNamed(context, logInScreenRoute);
-            },
-          )
+        ? Scaffold(
+          backgroundColor: backgroundColor,
+          appBar: AppBar(
+              backgroundColor: primaryColor,
+              elevation: 0,
+              title: DefaultTextWg(text: 'Cart', fontSize: 24, fontColor: whiteColor,),     
+          ),
+          body: Column(
+          children: [
+            Spacer(),  // Pushes the empty cart section to center vertically
+            Icon(Icons.shopping_cart_outlined, size: 60, color: Colors.grey),
+            SizedBox(height: 10),
+            Text(
+              'Your cart is empty',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(
+              'Log in to see shopping cart',
+              style: TextStyle(color: Colors.grey),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (!userProvider.isAuthenticated)
+                  OutlinedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserLoginScreen(),
+                      ),
+                    );
+                  },
+                  child: Text('Sign in / Register'),
+                  ) 
+                else
+                  OutlinedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MainScreen(),
+                      ),
+                    );
+                  },
+                  child: Text('Continue Shopping'),
+                ),                 
+                             
+              ],
+            ),
+            Spacer(),  // Pushes the recommendation section to the bottom
+          ],
+        ),
+        )
         : Scaffold(
+            backgroundColor: backgroundColor,
             appBar: AppBar(
               backgroundColor: primaryColor,
               elevation: 0,
@@ -68,7 +123,8 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ),
                 ]),
-            body: Padding(
+            body: 
+            Padding(
               padding: EdgeInsetsDirectional.only(start: 20, top: 20, end: 20, bottom: 50),
               child: Column(
                 children: [
@@ -82,13 +138,54 @@ class _CartScreenState extends State<CartScreen> {
                       },
                     ),
                   ),
-                  DefaultTextWg(text: cartProvider.totalPrice.toString()),
-                  CustomElevatedButton(text: 'Checkout', onPressed: () {
-                    cartProvider.checkout(context);
-                  })
+                  Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // All Checkbox
+                        Row(
+                          children: [
+                            // Icon(Icons.add_shopping_cart_outlined, size: 24),
+                            // SizedBox(width: 8),
+                            DefaultTextWg(text: 'Total: ${cartProvider.totalPrice.toStringAsFixed(0)} ks', fontSize: 16,),
+                          ],
+                        ),                        
+                        Stack(
+                          alignment: Alignment.topRight,                          
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                cartProvider.checkout(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColor,
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  DefaultTextWg(text: 'Checkout', fontColor: whiteColor,),
+                                  // Text('% Coupon Savings!', style: TextStyle(fontSize: 12, color: Colors.orange)),
+                                ],
+                              ),
+                            ),
+                            // Free Shipping Label                            
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+               
+                  // DefaultTextWg(text: cartProvider.totalPrice.toString()),
+                  // CustomElevatedButton(text: 'Checkout', onPressed: () {
+                  //   cartProvider.checkout(context);
+                  // })
                 ],
               ),              
-            )
+            ),
+            
           );
   }
 }

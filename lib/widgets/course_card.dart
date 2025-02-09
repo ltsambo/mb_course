@@ -20,7 +20,17 @@ class CourseCard extends StatelessWidget {
       child: ListTile(
         leading: course.coverImage == null
                 ? Image.asset('assets/not-available.jpeg', width: 50, height: 50, fit: BoxFit.cover)
-                : Image.network(course.coverImage!, width: 50, height: 50, fit: BoxFit.cover),// Image.network(course.coverImage!, width: 50, height: 50),
+                : Image.network(course.coverImage!, width: 50, height: 50, fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  // Show fallback image when the network image fails to load
+                  return Image.asset(
+                    'assets/not-available.jpeg',
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),// Image.network(course.coverImage!, width: 50, height: 50),
         title: DefaultTextWg(text: course.title),
         isThreeLine: true,        
         subtitle: Column(

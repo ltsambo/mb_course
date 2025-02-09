@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mb_course/config/api_config.dart';
+import 'package:mb_course/main.dart';
+import 'package:mb_course/providers/cart_provider.dart';
 import 'package:mb_course/services/navigation_service.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user.dart';
@@ -133,7 +136,7 @@ class UserProvider with ChangeNotifier {
 
     _setLoading(false);
     var jsonResponse = jsonDecode(response.body);
-    print('response data $jsonResponse');
+    // print('response data $jsonResponse');
     if (response.statusCode == 200 && jsonResponse["status"] == "success") {
       _currentUser = UserModel.fromJson(jsonResponse["data"]); // Parse response into UserModel
 
@@ -205,11 +208,11 @@ class UserProvider with ChangeNotifier {
 
     _setLoading(false);
 
-    print('profile retrieve ${response.statusCode}');
+    // print('profile retrieve ${response.statusCode}');
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       _selectedUser = UserProfileModel.fromJson(jsonResponse["data"]);
-      print('selected user $_selectedUser');
+      // print('selected user $_selectedUser');
       notifyListeners();
     } else {
       print("Failed to load user details");
@@ -273,19 +276,33 @@ class UserProvider with ChangeNotifier {
   }
 
   // 🔹 Logout User
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // await prefs.remove('accessToken');
     // await prefs.remove('refreshToken');
     await AuthHelper.clearToken();
 
     _currentUser = null;
+    _selectedUser = null;    
+    _userList.clear();
     notifyListeners();
+
+    Provider.of<CartProvider>(context, listen: false).clearLocalCart();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => MainScreen()),
+      (route) => false,
+    );
   }
 }
 
 class AuthHelper {
   static final _storage = FlutterSecureStorage();
+
+  static Future<bool> isLoggedIn() async {
+    final token = await getToken();
+    return token != null && token.isNotEmpty;
+  }
 
   // Get stored access token
   static Future<String?> getToken() async {
@@ -315,7 +332,7 @@ class AuthHelper {
     if (refreshToken == null) {
       // add warning message session has expired
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        NavigationService.navigateToLogin();
+        NavigationService.navigateTo('/login');
       });
       return false;
     } 
@@ -334,7 +351,7 @@ class AuthHelper {
     } else {
       print('route to login ${response.statusCode}');
       await clearToken(); // Clear expired tokens
-      NavigationService.navigateToLogin(); // Redirect to login screen
+      NavigationService.navigateTo('/login'); // Redirect to login screen
       return false;
     }
   }

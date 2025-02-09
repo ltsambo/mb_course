@@ -17,10 +17,8 @@ class CourseProvider with ChangeNotifier {
 
   Future<void> fetchCourses() async {
     final url = Uri.parse(coursesUrl); // Replace with actual API URL
-
     try {
       final response = await http.get(url);
-
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         // print('response data $responseData');
@@ -34,6 +32,7 @@ class CourseProvider with ChangeNotifier {
         //     .toList();
         notifyListeners();
       } else if (response.statusCode == 500) {
+        print('con falied ${response.statusCode}');
         throw Exception('Database connection falied ${response.statusCode}');
       }else {
         throw Exception('Failed to load courses ${response.statusCode}');

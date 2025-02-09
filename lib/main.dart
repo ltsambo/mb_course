@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/providers/cart_provider.dart';
+import 'package:mb_course/providers/order_provider.dart';
 import 'package:mb_course/screens/cart/cart_screen.dart';
 import 'package:mb_course/screens/user/user_course.dart';
 import 'package:mb_course/widgets/custom_bottom_nav_bar.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => CourseProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
       ],
       child: 
       MaterialApp(

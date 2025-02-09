@@ -1,5 +1,5 @@
 // String _baseUrl = "http://www.ltsambosg.com";
-String _baseUrl = "http://10.10.11.11:8000/api";
+String _baseUrl = "http://192.168.68.64:8000/api";
 
 // Auth 
 String refreshTokenUrl = "$_baseUrl/user/token/refresh/";
@@ -36,5 +36,8 @@ String cartCourseRemoveUrl(int cart_item_id) {
 }
 String cartCourseRemoveAllUrl = "$_baseUrl/cart/delete_all/";
 
-// Cehckout
+// Checkout - Orders
 String checkoutUrl = "$_baseUrl/order/checkout/";
+String fetchUserOrderUrl = "$_baseUrl/order/";
+String orderPaymentUrl = "$_baseUrl/order/payment/order-payments/";
+String retrievePaymentAcceptanceUrl = "$_baseUrl/order/acceptance/pending-acceptance-orders/";

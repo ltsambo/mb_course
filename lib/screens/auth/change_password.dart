@@ -19,9 +19,9 @@ class _ChangePasswordScreenWidgetState extends State<ChangePasswordScreen> {
   final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-  bool _obscureOldPassword = true;
-  bool _obscureNewPassword = true;
-  bool _obscureConfirmPassword = true;
+  // bool _obscureOldPassword = true;
+  // bool _obscureNewPassword = true;
+  // bool _obscureConfirmPassword = true;
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<UserProvider>(context);

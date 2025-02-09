@@ -121,6 +121,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         const Divider(height: 1),
                         _buildActionItem(
                           icon: Icons.account_balance_wallet_outlined,
+                          text: "My Purchases",
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => PaymentHistoryScreen()),
+                            );
+                          },
+                        ),
+                        const Divider(height: 1),
+                        _buildActionItem(
+                          icon: Icons.account_balance_wallet_outlined,
                           text: "Billing Details",
                           onTap: () {
                             Navigator.push(
