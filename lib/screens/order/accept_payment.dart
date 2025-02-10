@@ -4,6 +4,7 @@ import 'package:mb_course/providers/order_provider.dart';
 import 'package:mb_course/providers/user_provider.dart';
 import 'package:mb_course/screens/auth/login_screen.dart';
 import 'package:mb_course/widgets/badge.dart';
+import 'package:mb_course/widgets/custom_button.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +30,24 @@ class _AceeptOrderListScreenState extends State<AceeptOrderListScreen> {
     final orderProvider = Provider.of<OrderProvider>(context);
     final userProvider = Provider.of<UserProvider>(context);
     final pendingOrders = orderProvider.pendingAcceptanceOrders;
-    print('pendingOrders $pendingOrders');
+
+    Future<void> _approveReceipt(int paymentId) async {
+      final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+
+      try {
+        await orderProvider.approvePayment(paymentId, context);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Payment approved!')),
+        // );
+        
+      } catch (error) {
+        print('error $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error uploading receipt: $error')),
+        );
+      }
+    }
+    
     return pendingOrders.isEmpty
         ? Scaffold(
             backgroundColor: backgroundColor,
@@ -61,30 +79,30 @@ class _AceeptOrderListScreenState extends State<AceeptOrderListScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (!userProvider.isAuthenticated)
-                      OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UserLoginScreen(),
-                            ),
-                          );
-                        },
-                        child: Text('Sign in / Register'),
-                      )
-                    else
-                      OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MainScreen(),
-                            ),
-                          );
-                        },
-                        child: Text('Continue Shopping'),
-                      ),
+                    // if (!userProvider.isAuthenticated)
+                    //   OutlinedButton(
+                    //     onPressed: () {
+                    //       Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //           builder: (context) => UserLoginScreen(),
+                    //         ),
+                    //       );
+                    //     },
+                    //     child: Text('Sign in / Register'),
+                    //   )
+                    // else
+                    //   OutlinedButton(
+                    //     onPressed: () {
+                    //       Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //           builder: (context) => MainScreen(),
+                    //         ),
+                    //       );
+                    //     },
+                    //     child: Text('Continue Shopping'),
+                    //   ),
                   ],
                 ),
                 Spacer(), // Pushes the recommendation section to the bottom
@@ -147,11 +165,13 @@ class _AceeptOrderListScreenState extends State<AceeptOrderListScreen> {
                                           fit: BoxFit.cover,
                                         ),
                                       SizedBox(height: 8),
+                                      CustomElevatedButton(text: 'Approve', onPressed: () =>  _approveReceipt(payment['id'])) 
                                       // Text('Approved: ${payment['is_approved'] ? "Yes" : "No"}', style: TextStyle(color: payment['is_approved'] ? Colors.green : Colors.red)),
                                     ],
                                   );
                                 }).toList(),
                               ),
+                                                           
                       ],
                     ),
                   ),

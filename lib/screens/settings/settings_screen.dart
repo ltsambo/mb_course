@@ -37,6 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final userProvider = Provider.of<UserProvider>(context);   
     final orderProvider = Provider.of<OrderProvider>(context);    
     print('object ${orderProvider.statusCounts}');
+    
     final toPayCount = orderProvider.statusCounts['pending_upload'] ?? 0;
     final pendingAcceptanceCount = orderProvider.statusCounts['pending_acceptance'] ?? 0;
     final acceptedCount = orderProvider.statusCounts['accepted'] ?? 0;
@@ -223,7 +224,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                             // To Ship
                             _buildPurchaseOption(
-                              icon: Icons.local_shipping_outlined,
+                              icon: Icons.assignment_turned_in_sharp,
                               label: 'To Accept',
                               badgeCount: pendingAcceptanceCount
                             ),

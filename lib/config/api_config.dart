@@ -1,5 +1,5 @@
 // String _baseUrl = "http://www.ltsambosg.com";
-String _baseUrl = "http://192.168.68.64:8000/api";
+String _baseUrl = "http://192.168.68.60:8000/api";
 
 // Auth 
 String refreshTokenUrl = "$_baseUrl/user/token/refresh/";
@@ -41,3 +41,4 @@ String checkoutUrl = "$_baseUrl/order/checkout/";
 String fetchUserOrderUrl = "$_baseUrl/order/";
 String orderPaymentUrl = "$_baseUrl/order/payment/order-payments/";
 String retrievePaymentAcceptanceUrl = "$_baseUrl/order/acceptance/pending-acceptance-orders/";
+// String approvePayment = "$_baseUrl/order"

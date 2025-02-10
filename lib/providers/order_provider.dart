@@ -32,7 +32,12 @@ class OrderProvider with ChangeNotifier {
         if (data['data']['orders'] is List){
           _userOrders = List<Map<String, dynamic>>.from(data['data']['orders']);
           print('status count ${data['data']['status_count']}');
-          final statusList = data['data']['status_count'] as List<dynamic>;
+          
+          // final statusList = data['data']['status_count'] as List<dynamic>;
+          final statusList = (data['data']['status_count'] != null && data['data']['status_count'].isNotEmpty)
+          ? (data['data']['status_count'] as List<dynamic>)
+          : [];  
+          
           statusCounts = {
             for (var statusItem in statusList)
               statusItem['status']: statusItem['count']
@@ -168,7 +173,16 @@ class OrderProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        pendingAcceptanceOrders = data['data'];  // Extract pending orders
+        
+        // pendingAcceptanceOrders = data['data'];  // Extract pending orders
+        if (data['data'] is List) {
+          pendingAcceptanceOrders = data['data'];  // If 'data' is a list
+        } else if (data['data'] is Map) {
+          pendingAcceptanceOrders = data['data'].values.toList();  // Convert map values to list
+        } else {
+          throw Exception('Unexpected data format from API');
+        }
+        
         notifyListeners();  // Notify UI to update
       } else if (response.statusCode == 401 && retry) {      
         if (userProvider.isAuthenticated) {
@@ -194,15 +208,40 @@ class OrderProvider with ChangeNotifier {
   }
 
   // Admin: Approve payment
-  Future<void> approvePayment(int paymentId) async {
+  Future<void> approvePayment(int paymentId, BuildContext context, {bool retry = true}) async {
     final token = await AuthHelper.getToken();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     final response = await http.post(
-      Uri.parse('$orderPaymentUrl/$paymentId/approve/'),
+      Uri.parse('$orderPaymentUrl$paymentId/approve/'),
       headers: {'Authorization': 'Bearer $token'},
     );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to approve payment');
+    try {
+      if (response.statusCode == 200) {
+        fetchPendingAcceptanceOrders(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Payment Approved')),
+        );
+        notifyListeners();  
+      } else if (response.statusCode == 401 && retry) {      
+          if (userProvider.isAuthenticated) {
+            bool refreshed = await AuthHelper.refreshToken();
+            if (refreshed) {
+              return fetchPendingAcceptanceOrders(context, retry: false);  // Retry after refreshing token
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Session Expired! Please log in again.')),
+              );
+              userProvider.logout(context);  // Log out the user if refresh fails
+            }
+          }
+      } else {
+        throw Exception('Failed to approve payment');
+      }
+    } catch (e) {
+      print('Error approving payments: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error approving payments: $e')),
+      );
     }
   }
 
