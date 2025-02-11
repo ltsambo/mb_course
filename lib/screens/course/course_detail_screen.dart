@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/widgets/custom_button.dart';
+import 'package:mb_course/widgets/default_text.dart';
 import 'package:mb_course/widgets/lesson_card.dart';
 import '../../models/course.dart';
 import '../../widgets/video_player_widget.dart';
@@ -12,8 +14,11 @@ class CourseDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text(course.title),
+        backgroundColor: primaryColor,
+        title: DefaultTextWg(text: course.title, fontColor: whiteColor, fontSize: 20,),
+        leading: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back, color: whiteColor,)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -47,6 +52,7 @@ class CourseDetailScreen extends StatelessWidget {
                   SizedBox(height: 8),
                   Text('Price: ${course.price}'),
                   SizedBox(height: 16),
+                  if (!(course.isPurchased ?? false)) 
                   CustomElevatedButton(
                     text: 'Add to cart', 
                     onPressed: () => {}),

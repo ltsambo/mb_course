@@ -164,7 +164,7 @@ class CartProvider with ChangeNotifier {
     _cartUserCourses.clear();
     notifyListeners();
   }
-
+  
   Future<void> addCourseToCart({
     required String courseId,
     required double price,
@@ -188,6 +188,7 @@ class CartProvider with ChangeNotifier {
 
       if (response.statusCode == 201) {
         _cartCourses.add(int.parse(courseId));  // Update local cart (optional)
+        
         notifyListeners();  // Notify UI about cart update
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Course added to cart!')),

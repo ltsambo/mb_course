@@ -15,10 +15,25 @@ class CourseProvider with ChangeNotifier {
   List<Course> get courses => _courses;
   int get totalCourses => _totalCourses;
 
+  void clearCourses() {
+    _courses.clear();
+    _totalCourses = 0;
+    notifyListeners();  // Notify UI that courses are cleared
+  }
+
   Future<void> fetchCourses() async {
     final url = Uri.parse(coursesUrl); // Replace with actual API URL
+    final token = await AuthHelper.getToken();
     try {
-      final response = await http.get(url);
+      
+      final headers = {
+        'Content-Type': 'application/json',
+        if (token != null && token.isNotEmpty)
+          'Authorization': 'Bearer $token',  // Include the token if user is authenticated
+      };
+      
+      final response = await http.get(url, headers: headers);
+     
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         // print('response data $responseData');
@@ -27,9 +42,7 @@ class CourseProvider with ChangeNotifier {
         _courses = List<Course>.from(
           (responseData['data']['courses'] as List).map((course) => Course.fromJson(course))
         );
-        // (responseData['data']['courses'] as List)
-        //     .map((course) => Course.fromJson(course))
-        //     .toList();
+        
         notifyListeners();
       } else if (response.statusCode == 500) {
         print('con falied ${response.statusCode}');

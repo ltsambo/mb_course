@@ -20,10 +20,10 @@ class LessonCard extends StatelessWidget {
         return ListTile(
           leading: Text((index + 1).toString()),
           title: Text(lesson.title),
-          trailing: lesson.isDemo || userProvider.isAuthenticated
+          trailing: lesson.isDemo || (course.isPurchased ?? true)
               ? Icon(Icons.play_circle_fill)
               : Icon(Icons.lock),
-          onTap: lesson.isDemo || userProvider.isAuthenticated
+          onTap: lesson.isDemo || (course.isPurchased ?? true)
               ? () {
                   // Play video
                 }

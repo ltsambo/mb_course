@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:mb_course/config/api_config.dart';
 import 'package:mb_course/main.dart';
 import 'package:mb_course/providers/cart_provider.dart';
+import 'package:mb_course/providers/course_porvider.dart';
 import 'package:mb_course/services/navigation_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -281,13 +282,16 @@ class UserProvider with ChangeNotifier {
     // await prefs.remove('accessToken');
     // await prefs.remove('refreshToken');
     await AuthHelper.clearToken();
-
+    
     _currentUser = null;
     _selectedUser = null;    
     _userList.clear();
+    
     notifyListeners();
 
     Provider.of<CartProvider>(context, listen: false).clearLocalCart();
+    Provider.of<CourseProvider>(context, listen: false).clearCourses();
+    
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),

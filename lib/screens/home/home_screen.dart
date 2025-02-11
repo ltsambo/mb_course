@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final userProvider = Provider.of<UserProvider>(context);
     final courseProvider = Provider.of<CourseProvider>(context);
     final courses = Provider.of<CourseProvider>(context).courses;
-
+    
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: RefreshIndicator(
           onRefresh: () async {
-            
+            courseProvider.fetchCourses();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Courses refreshed!'),

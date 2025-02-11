@@ -17,6 +17,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   bool _showVolumeSlider = false;
   double _volume = 0.5;
   bool _isCompleted = false;
+  bool _hasError = false;
 
   @override
   void initState() {
@@ -24,10 +25,19 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     _controller = VideoPlayerController.network(widget.url)
       ..initialize().then((_) {
         setState(() {});
-      });
+      }).catchError((error) {
+        setState(() {
+          _hasError = true;
+        });
+      });;
     _controller.setVolume(_volume);
 
     _controller.addListener(() {
+      if (_controller.value.hasError) {
+        setState(() {
+          _hasError = true;
+        });
+      }
       if (_controller.value.position >= _controller.value.duration && !_isCompleted) {
         setState(() {
           _isCompleted = true;
@@ -65,7 +75,9 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
+      child: _hasError 
+      ? Image.asset('assets/not-available.jpeg')
+      :Padding(
         padding: const EdgeInsets.all(10.0), // Add padding around the player
         child: _controller.value.isInitialized
             ? ClipRRect(

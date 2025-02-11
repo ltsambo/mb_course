@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
+import 'package:mb_course/providers/course_porvider.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
 import '../models/course.dart';
 import '../providers/cart_provider.dart';
+import '../screens/cart/cart_screen.dart';
 import '../screens/course/admin_course_details.dart';
 import '../screens/course/course_detail_screen.dart';
 import '../screens/course/course_update.dart';
@@ -15,7 +17,7 @@ class CourseCard extends StatelessWidget {
   const CourseCard({super.key, required this.course});
 
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {       
     return Card(
       child: ListTile(
         leading: course.coverImage == null
@@ -37,7 +39,9 @@ class CourseCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('${course.totalDuration} | ${course.lessons!.length} lessons'),   
-            DefaultTextWg(text: '${course.price.toStringAsFixed(0)} ks', fontColor: primaryColor),   
+            DefaultTextWg(text: '${course.price.toStringAsFixed(0)} ks', fontColor: primaryColor),  
+            DefaultTextWg(text: 'InCart ${course.inCart}', fontColor: primaryColor),   
+            DefaultTextWg(text: 'IsPurchased ${course.isPurchased}', fontColor: primaryColor),   
           ],
         ),
         trailing: Container(                         
@@ -46,15 +50,40 @@ class CourseCard extends StatelessWidget {
             shape: BoxShape.circle, 
             border: Border.all(color: primaryColor, width: 1.5), 
           ),
-          child: IconButton(
+          child: (course.isPurchased ?? false) 
+          ? IconButton(
+          icon: Icon(Icons.play_circle_fill, color: Colors.green),
+          onPressed: () {
+            // Navigate to the course content page
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CourseDetailScreen(course: course)),
+            );
+          },
+        )
+      : (course.inCart ?? false)
+          ? IconButton(
+              icon: Icon(Icons.shopping_cart, color: Colors.orange),
+              onPressed: () {
+                // Navigate to the cart screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CartScreen()),
+                );
+              },
+            )
+          :           
+          IconButton(
             icon: Icon(Icons.add_shopping_cart, color: primaryColor),
-            onPressed: () {
+            onPressed: () async {
               final cartProvider = Provider.of<CartProvider>(context, listen: false);
-              cartProvider.addCourseToCart(
+              final courseProvider = Provider.of<CourseProvider>(context, listen: false);
+              await cartProvider.addCourseToCart(
                 courseId: course.id.toString(),
                 price: course.price,
                 context: context
               );
+              await courseProvider.fetchCourses();
               // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added course to cart!')));
             },
           ),
