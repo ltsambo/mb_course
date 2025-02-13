@@ -37,6 +37,13 @@ class UserProvider with ChangeNotifier {
     _context = context;
   }
 
+  Future<void> initializeAuth() async {
+    final token = await AuthHelper.getToken();
+    if (token == null || token.isEmpty) {
+      await AuthHelper.clearToken(); // Ensure no invalid tokens exist
+    }
+  }
+
   // 🔹 Register User
   Future<String?> registerUser({
     required String username,
@@ -224,6 +231,11 @@ class UserProvider with ChangeNotifier {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // await prefs.remove('accessToken');
     // await prefs.remove('refreshToken');
+    bool refreshed = await AuthHelper.refreshToken();
+    if (refreshed) {
+      print("Session refreshed successfully. Retrying request...");
+      return; // Token refreshed, no need to log out
+    }
     await AuthHelper.clearToken();
 
     _currentUser = null;
@@ -310,6 +322,7 @@ class AuthHelper {
 
   // Get stored access token
   static Future<String?> getToken() async {
+    print("Retrieved token from storage: ${await _storage.read(key: 'accessToken')}");
     return await _storage.read(key: 'accessToken');
   }
 
@@ -333,8 +346,9 @@ class AuthHelper {
     
     final refreshToken = await getRefreshToken();
     print('check refresh token $refreshToken');
-    if (refreshToken == null) {
+    if (refreshToken == null || refreshToken.isEmpty) {
       // add warning message session has expired
+      await clearToken();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         NavigationService.navigateTo('/login');
       });

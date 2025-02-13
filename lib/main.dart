@@ -13,7 +13,19 @@ import 'screens/auth/login_screen.dart';
 import 'services/navigation_service.dart';
 // import 'package:motion_tab_bar_v2/motion-tab-bar.dart'; // Import the MotionTabBar package
 
-void main() {
+Future<void> initializeAuth() async {
+  await AuthHelper.clearToken(); // Ensure old tokens are cleared if user is logged out
+  String? token = await AuthHelper.getToken();
+  if (token == null || token.isEmpty) {
+    print("No valid token found at startup.");
+  } else {
+    print("Valid token found: $token");
+  }
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensures async functions run before UI starts
+  await initializeAuth(); // Initialize the UserProvider
   runApp(
       MultiProvider(
       providers: [

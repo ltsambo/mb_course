@@ -28,10 +28,9 @@ class CourseProvider with ChangeNotifier {
       
       final headers = {
         'Content-Type': 'application/json',
-        if (token != null && token.isNotEmpty)
-          'Authorization': 'Bearer $token',  // Include the token if user is authenticated
+        if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',  // Include the token if user is authenticated
       };
-      
+
       final response = await http.get(url, headers: headers);
      
       if (response.statusCode == 200) {

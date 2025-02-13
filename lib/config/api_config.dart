@@ -1,5 +1,5 @@
 // String _baseUrl = "http://www.ltsambosg.com";
-String _baseUrl = "http://192.168.68.63:8000/api";
+String _baseUrl = "http://10.10.11.11:8000/api";
 
 // Auth 
 String refreshTokenUrl = "$_baseUrl/user/token/refresh/";
