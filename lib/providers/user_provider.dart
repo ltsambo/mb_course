@@ -133,6 +133,7 @@ class UserProvider with ChangeNotifier {
     _setLoading(true);
 
     var url = Uri.parse(loginUrl);
+    print('username $username password $password');
     var response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -141,10 +142,11 @@ class UserProvider with ChangeNotifier {
         "password": password,
       }),
     );
+    print('response ${response.statusCode}');
 
     _setLoading(false);
     var jsonResponse = jsonDecode(response.body);
-    // print('response data $jsonResponse');
+    print('response data $jsonResponse');
     if (response.statusCode == 200 && jsonResponse["status"] == "success") {
       _currentUser = UserModel.fromJson(jsonResponse["data"]); // Parse response into UserModel
 

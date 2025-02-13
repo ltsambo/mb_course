@@ -41,4 +41,5 @@ String checkoutUrl = "$_baseUrl/order/checkout/";
 String fetchUserOrderUrl = "$_baseUrl/order/";
 String orderPaymentUrl = "$_baseUrl/order/payment/order-payments/";
 String retrievePaymentAcceptanceUrl = "$_baseUrl/order/acceptance/pending-acceptance-orders/";
+String fetchEnrolledCoursesUrl = "$_baseUrl/order/user/enrolled-courses/";
 // String approvePayment = "$_baseUrl/order"

@@ -13,6 +13,7 @@ class CourseDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('is purchased ${course.title} ${course.isPurchased}');
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -52,7 +53,7 @@ class CourseDetailScreen extends StatelessWidget {
                   SizedBox(height: 8),
                   Text('Price: ${course.price}'),
                   SizedBox(height: 16),
-                  if (!(course.isPurchased ?? false)) 
+                  if (course.isPurchased ?? true)
                   CustomElevatedButton(
                     text: 'Add to cart', 
                     onPressed: () => {}),

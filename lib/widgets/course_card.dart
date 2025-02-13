@@ -17,7 +17,8 @@ class CourseCard extends StatelessWidget {
   const CourseCard({super.key, required this.course});
 
   @override
-  Widget build(BuildContext context) {       
+  Widget build(BuildContext context) {    
+    print('course ${course.title} ${course.isPurchased}');   
     return Card(
       child: ListTile(
         leading: course.coverImage == null

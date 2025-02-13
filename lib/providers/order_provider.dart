@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mb_course/config/api_config.dart';
+import 'package:mb_course/models/course.dart';
 import 'package:mb_course/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +12,16 @@ class OrderProvider with ChangeNotifier {
   List<Map<String, dynamic>> get userOrders => _userOrders;
   List<dynamic> pendingAcceptanceOrders = []; 
   Map<String, int> statusCounts = {};
+
+  List<Course> _enrolledCourses = [];
+  bool _isLoading = false;
+
+  List<Course> get enrolledCourses => _enrolledCourses;
+  bool get isLoading => _isLoading;
+  void _setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
   
   // final userCollection = FirebaseFirestore.instance.collection('users');
   Future<void> fetchUserOrders(BuildContext context, {bool retry = true}) async {
@@ -243,6 +254,69 @@ class OrderProvider with ChangeNotifier {
         SnackBar(content: Text('Error approving payments: $e')),
       );
     }
+  }
+
+  Future<void> fetchEnrolledCourses(BuildContext context, {bool retry = true}) async {
+    _setLoading(true);
+    final url = Uri.parse(fetchEnrolledCoursesUrl);
+    final token = await AuthHelper.getToken();
+
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    if (token == null || token.isEmpty) {
+      print("No authentication token found. User might be logged out.");
+      _setLoading(false);
+      return;
+    }
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print("Fetch enrolled courses response: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('response data ${responseData['data']}');
+        if (responseData['data'] is List) {
+          _enrolledCourses = (responseData['data'] as List)
+              .map((course) => Course.fromJson(course))
+              .toList();
+        }
+      } else if (response.statusCode == 401 && retry) {      
+          if (userProvider.isAuthenticated) {
+            bool refreshed = await AuthHelper.refreshToken();
+            if (refreshed) {
+              return fetchEnrolledCourses(context, retry: false);  // Retry after refreshing token
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Session Expired! Please log in again.')),
+              );
+              userProvider.logout(context);  // Log out the user if refresh fails
+            }
+          }
+      } else if (response.statusCode == 404) {
+        print("No enrolled courses found.");
+        _enrolledCourses = [];
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch enrolled courses. Error: ${response.statusCode}')),
+      );
+      }
+    } catch (error) {
+      print("Error fetching enrolled courses: $error");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching enrolled courses: $error')),
+      );
+    }
+
+    _setLoading(false);
+    notifyListeners();
   }
 
   int get orderCount => _userOrders.length;

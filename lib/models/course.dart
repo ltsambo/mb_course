@@ -3,7 +3,8 @@ import 'package:mb_course/models/lesson.dart';
 
 class Course {
   final int id;
-  final String title, instructorUsername;
+  final String title; 
+  final String? instructorUsername;
   final String? recommendation;
   final int totalDuration;
   final String? description;
@@ -21,7 +22,7 @@ class Course {
   Course({
     required this.id,
     required this.title,
-    required this.instructorUsername,
+    this.instructorUsername,
     this.recommendation,
     required this.totalDuration,
     this.description,

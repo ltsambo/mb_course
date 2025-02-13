@@ -6,6 +6,7 @@ import 'package:mb_course/main.dart';
 import 'package:mb_course/providers/order_provider.dart';
 import 'package:mb_course/providers/user_provider.dart';
 import 'package:mb_course/screens/auth/login_screen.dart';
+import 'package:mb_course/screens/order/order_details.dart';
 import 'package:mb_course/widgets/badge.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
@@ -226,7 +227,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Text(
+                                                        TextButton(onPressed: () => Navigator.push(
+                                                            context, MaterialPageRoute(builder: (context) => OrderDetailsPage(order: item))
+                                                          ), child: Text(
                                                           'Order Id: ${item['order_uuid']}',
                                                           style: TextStyle(
                                                               fontWeight:
@@ -236,7 +239,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                                           maxLines: 2,
                                                           overflow: TextOverflow
                                                               .ellipsis,
-                                                        ),
+                                                        ),),                                                        
                                                         CustomBadge(text: item['order_status'], backgroundColor: badgeColor),                                                        
                                                       ],
                                                     )
