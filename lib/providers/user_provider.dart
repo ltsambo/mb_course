@@ -324,7 +324,7 @@ class AuthHelper {
 
   // Get stored access token
   static Future<String?> getToken() async {
-    print("Retrieved token from storage: ${await _storage.read(key: 'accessToken')}");
+    // print("Retrieved token from storage: ${await _storage.read(key: 'accessToken')}");
     return await _storage.read(key: 'accessToken');
   }
 
@@ -347,7 +347,7 @@ class AuthHelper {
   static Future<bool> refreshToken() async {
     
     final refreshToken = await getRefreshToken();
-    print('check refresh token $refreshToken');
+    // print('check refresh token $refreshToken');
     if (refreshToken == null || refreshToken.isEmpty) {
       // add warning message session has expired
       await clearToken();

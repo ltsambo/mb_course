@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import '../models/course.dart';
-import '../screens/course/course_detail_screen.dart';
+import 'package:provider/provider.dart';
+import '../providers/carousel.dart';
 
 class CourseCarousel extends StatelessWidget {
-  final List<Course> courses;
-
-  CourseCarousel({required this.courses});
+  
+  CourseCarousel({Key? key});
 
   @override
   Widget build(BuildContext context) {
+    final carousels = Provider.of<CarouselProvider>(context).carousels;
     return CarouselSlider(
       options: CarouselOptions(
         height: 200.0,
@@ -18,25 +18,25 @@ class CourseCarousel extends StatelessWidget {
         aspectRatio: 16 / 9,
         viewportFraction: 0.8,
       ),
-      items: courses.map((course) {
+      items: carousels.map((carousel) {
         return Builder(
           builder: (BuildContext context) {
             return GestureDetector(
               onTap: () {
                 // Navigate to course details on carousel item click
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CourseDetailScreen(course: course),
-                  ),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (_) => CourseDetailScreen(course: course),
+                //   ),
+                // );
               },
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 5.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   image: DecorationImage(
-                    image: course.coverImage == null ? AssetImage('assets/not-available.jpeg') : NetworkImage(course.coverImage!),
+                    image: carousel.image == null ? AssetImage('assets/not-available.jpeg') : NetworkImage(carousel.image!),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -46,7 +46,7 @@ class CourseCarousel extends StatelessWidget {
                     color: Colors.black54,
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                      course.title,
+                      carousel.title,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,

@@ -7,7 +7,7 @@ import 'package:mb_course/providers/order_provider.dart';
 import 'package:mb_course/providers/user_provider.dart';
 import 'package:mb_course/screens/auth/login_screen.dart';
 import 'package:mb_course/screens/order/order_details.dart';
-import 'package:mb_course/widgets/badge.dart';
+// import 'package:mb_course/widgets/badge.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
@@ -191,7 +191,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                         final receiptImage = _receiptImages[orderId];
                         Color badgeColor = Colors.white;                        
                         if (item['order_status'] == 'Pending upload') 
-                          badgeColor = Colors.lightBlue;
+                          badgeColor = Colors.red;
                         else if (item['order_status'] == 'Pending Acceptance') 
                           badgeColor = Colors.amber;
                         else if (item['order_status'] == 'Accepted') 
@@ -240,7 +240,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                                           overflow: TextOverflow
                                                               .ellipsis,
                                                         ),),                                                        
-                                                        CustomBadge(text: item['order_status'], backgroundColor: badgeColor),                                                        
+                                                        // CustomBadge(text: item['order_status'], backgroundColor: badgeColor),                                                        
+                                                        DefaultTextWg(text: item['order_status'], fontColor: badgeColor, fontWeight: FontWeight.normal, fontSize: 14),
                                                       ],
                                                     )
                                                   ],

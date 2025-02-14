@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/providers/course_porvider.dart';
+import 'package:mb_course/screens/order/order_screen.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +19,7 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {    
-    print('course ${course.title} ${course.isPurchased}');   
+    // print('course ${course.title} ${course.isPurchased}');   
     return Card(
       child: ListTile(
         leading: course.coverImage == null
@@ -41,8 +42,9 @@ class CourseCard extends StatelessWidget {
           children: [
             Text('${course.totalDuration} | ${course.lessons!.length} lessons'),   
             DefaultTextWg(text: '${course.price.toStringAsFixed(0)} ks', fontColor: primaryColor),  
-            DefaultTextWg(text: 'InCart ${course.inCart}', fontColor: primaryColor),   
-            DefaultTextWg(text: 'IsPurchased ${course.isPurchased}', fontColor: primaryColor),   
+            // DefaultTextWg(text: 'InCart ${course.inCart}', fontColor: primaryColor),   
+            // DefaultTextWg(text: 'IsPurchased ${course.isPurchased}', fontColor: primaryColor),   
+            // DefaultTextWg(text: 'IsOrdered ${course.isOrdered}', fontColor: primaryColor),   
           ],
         ),
         trailing: Container(                         
@@ -73,7 +75,18 @@ class CourseCard extends StatelessWidget {
                 );
               },
             )
-          :           
+        : (course.isOrdered ?? false)
+          ? IconButton(
+              icon: Icon(Icons.currency_exchange_sharp, color: const Color.fromARGB(255, 12, 42, 173)),
+              onPressed: () {
+                // Navigate to the cart screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => OrderListScreen()),
+                );
+              },
+            )
+        :           
           IconButton(
             icon: Icon(Icons.add_shopping_cart, color: primaryColor),
             onPressed: () async {
@@ -107,7 +120,7 @@ class AdminCourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {    
-    print('admin course card ${course.coverImage}');
+    // print('admin course card ${course.coverImage}');
     return Card(
       child: ListTile(
         leading: course.coverImage != null ? Image.network(course.coverImage!, width: 50, height: 50, fit: BoxFit.cover)

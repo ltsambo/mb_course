@@ -15,6 +15,7 @@ class Course {
   final double salePrice;
   final bool? inCart;
   final bool? isPurchased;
+  final bool? isOrdered;
   // final int lessonCount; // Added to track lesson count
   final List<Lesson>? lessons;
   final String modifiedOn;
@@ -33,6 +34,7 @@ class Course {
     required this.salePrice,
     this.inCart,
     this.isPurchased,
+    this.isOrdered,
     // required this.lessonCount,
     this.lessons,
     required this.modifiedOn,
@@ -53,6 +55,7 @@ class Course {
       salePrice: double.tryParse(json['sale_price'].toString()) ?? 0.0,
       inCart: json['in_cart'],
       isPurchased: json['is_purchased'],
+      isOrdered: json['is_ordered'],
       // lessonCount: (json['lessons'] as List).map((lesson) => Lesson.fromJson(lesson)).toList(), // Count lessons from API
       lessons: (json['lessons'] as List).map((lesson) => Lesson.fromJson(lesson)).toList(),
       modifiedOn: json['modified_on'],

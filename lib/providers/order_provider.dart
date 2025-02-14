@@ -42,7 +42,7 @@ class OrderProvider with ChangeNotifier {
         final data = jsonDecode(response.body);
         if (data['data']['orders'] is List){
           _userOrders = List<Map<String, dynamic>>.from(data['data']['orders']);
-          print('status count ${data['data']['status_count']}');
+          // print('status count $_userOrders');
           
           // final statusList = data['data']['status_count'] as List<dynamic>;
           final statusList = (data['data']['status_count'] != null && data['data']['status_count'].isNotEmpty)
@@ -53,7 +53,7 @@ class OrderProvider with ChangeNotifier {
             for (var statusItem in statusList)
               statusItem['status']: statusItem['count']
           };
-          print('status count 2 $statusCounts');
+          // print('status count 2 $statusCounts');
         }
         else {
           _userOrders = [];

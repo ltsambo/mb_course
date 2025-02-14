@@ -4,6 +4,7 @@ import 'package:mb_course/providers/order_provider.dart';
 import 'package:mb_course/screens/auth/change_password.dart';
 import 'package:mb_course/screens/auth/login_screen.dart';
 import 'package:mb_course/screens/business/contact_us.dart';
+import 'package:mb_course/screens/carousel/carousel_screen.dart';
 import 'package:mb_course/screens/course/admin_course_list.dart';
 import 'package:mb_course/screens/order/accept_payment.dart';
 import 'package:mb_course/screens/order/order_screen.dart';
@@ -135,7 +136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => UserListScreen(), 
+                            builder: (context) => CarouselScreen(), 
                           ),
                         );
                       },

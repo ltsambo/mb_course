@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
+import 'package:mb_course/providers/carousel.dart';
 import 'package:mb_course/route/screen_export.dart';
 import 'package:mb_course/screens/auth/login_screen.dart';
 import 'package:mb_course/widgets/course_card.dart';
@@ -21,12 +22,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     Provider.of<CourseProvider>(context, listen: false).fetchCourses();
+    Provider.of<CarouselProvider>(context, listen: false).fetchCarousels();
   }
 
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
-    final courseProvider = Provider.of<CourseProvider>(context);
+    final courseProvider = Provider.of<CourseProvider>(context);    
     final courses = Provider.of<CourseProvider>(context).courses;
     
     return Scaffold(
@@ -96,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 24,
               ),
-              // CourseCarousel(courses: courses),
+              CourseCarousel(),
               SizedBox(
                 height: 20,
               ),

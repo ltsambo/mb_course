@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mb_course/providers/business.dart';
 import 'package:mb_course/providers/cart_provider.dart';
 import 'package:mb_course/providers/order_provider.dart';
 import 'package:mb_course/screens/cart/cart_screen.dart';
@@ -6,6 +7,7 @@ import 'package:mb_course/screens/user/user_course.dart';
 import 'package:mb_course/widgets/custom_bottom_nav_bar.dart';
 // import 'package:mb_course/screens/cart/cart_screen.dart';
 import 'package:provider/provider.dart';
+import 'providers/carousel.dart';
 import 'route/screen_export.dart';
 import 'providers/course_porvider.dart';
 import 'providers/user_provider.dart';
@@ -23,9 +25,14 @@ Future<void> initializeAuth() async {
   }
 }
 
+Future<void> initializeCarousel() async {
+  await CarouselProvider().fetchCarousels();
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensures async functions run before UI starts
   await initializeAuth(); // Initialize the UserProvider
+  initializeCarousel(); // Initialize the CarouselProvider
   runApp(
       MultiProvider(
       providers: [
@@ -48,6 +55,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CourseProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => CarouselProvider()),
+        ChangeNotifierProvider(create: (_) => BusinessProvider()),
       ],
       child: 
       MaterialApp(

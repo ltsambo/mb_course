@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:mb_course/main.dart';
+// import 'package:mb_course/main.dart';
 import 'package:mb_course/providers/order_provider.dart';
-import 'package:mb_course/providers/user_provider.dart';
-import 'package:mb_course/screens/auth/login_screen.dart';
-import 'package:mb_course/widgets/badge.dart';
+// import 'package:mb_course/providers/user_provider.dart';
+// import 'package:mb_course/screens/auth/login_screen.dart';
+// import 'package:mb_course/widgets/badge.dart';
 import 'package:mb_course/widgets/custom_button.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../consts/consts.dart';
-import '../../services/global_methods.dart';
+// import '../../services/global_methods.dart';
 
 class AceeptOrderListScreen extends StatefulWidget {
   const AceeptOrderListScreen({super.key});
@@ -28,7 +28,7 @@ class _AceeptOrderListScreenState extends State<AceeptOrderListScreen> {
   @override
   Widget build(BuildContext context) {
     final orderProvider = Provider.of<OrderProvider>(context);
-    final userProvider = Provider.of<UserProvider>(context);
+    // final userProvider = Provider.of<UserProvider>(context);
     final pendingOrders = orderProvider.pendingAcceptanceOrders;
 
     Future<void> _approveReceipt(int paymentId) async {

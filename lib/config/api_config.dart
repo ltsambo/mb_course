@@ -1,6 +1,10 @@
 // String _baseUrl = "http://www.ltsambosg.com";
 String _baseUrl = "http://10.10.11.11:8000/api";
 
+// Business
+String businessListUrl = "$_baseUrl/business/businesses/";
+String carouselistUrl = "$_baseUrl/business/carousels/";
+
 // Auth 
 String refreshTokenUrl = "$_baseUrl/user/token/refresh/";
 String registerUrl = "$_baseUrl/user/register/";

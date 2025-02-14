@@ -22,7 +22,7 @@ class OrderDetailsPage extends StatelessWidget {
 
     // Filter courses that are in the order and are purchased
     final purchasedCourses = courses.where(
-      (course) => orderedCourseIds.contains(course.id) && course.isPurchased!,
+      (course) => orderedCourseIds.contains(course.id) && course.isOrdered!,
     ).toList();    
     return Scaffold(
       backgroundColor: backgroundColor,

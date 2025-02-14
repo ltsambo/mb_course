@@ -57,6 +57,7 @@ class CourseDetailScreen extends StatelessWidget {
                   CustomElevatedButton(
                     text: 'Add to cart', 
                     onPressed: () => {}),
+                  
                   SizedBox(height: 16),
                   Text(
                     'What youll learn',
