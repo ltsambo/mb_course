@@ -100,7 +100,7 @@ class ApiService {
 
   // Update Carousel (PUT)
   static Future<Carousel> updateCarousel(Carousel carousel, File? imageFile) async {
-    var uri = Uri.parse('$carouselistUrl${carousel.id}');
+    var uri = Uri.parse('$carouselistUrl${carousel.id}/');
 
     final token = await AuthHelper.getToken();    
     final request = http.MultipartRequest('PATCH', uri)
