@@ -3,8 +3,8 @@ import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/services/global_methods.dart';
 import 'package:mb_course/widgets/course_card.dart';
 import 'package:mb_course/widgets/default_text.dart';
-
-import '../../models/course.dart';
+import 'package:provider/provider.dart';
+import '../../providers/course_porvider.dart';
 
 
 class OrderDetailsPage extends StatelessWidget {
@@ -12,7 +12,18 @@ class OrderDetailsPage extends StatelessWidget {
   const OrderDetailsPage({Key? key, required this.order}) : super(key: key);
   
   @override
-  Widget build(BuildContext context) {        
+  Widget build(BuildContext context) {  
+    final courses = Provider.of<CourseProvider>(context).courses;
+
+    // Extract course IDs safely from the order
+    final orderedCourseIds = order['items']
+        .map((product) => int.tryParse(product['course']['id'].toString()) ?? 0)
+        .toSet();
+
+    // Filter courses that are in the order and are purchased
+    final purchasedCourses = courses.where(
+      (course) => orderedCourseIds.contains(course.id) && course.isPurchased!,
+    ).toList();    
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -31,8 +42,11 @@ class OrderDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // _buildCourseCard(),
-            for (var product in order['items'])
-              CourseCard(course: Course.fromJson(product['course'])),  
+            for (var course in purchasedCourses) 
+              CourseCard(course: course),
+            
+            // for (var product in order['items'])
+            //   CourseCard(course: Course.fromJson(product['course'])),  
             // CourseCard(course: product),   
             const SizedBox(height: 24),
             // _buildShopInfo(),
