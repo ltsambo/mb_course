@@ -7,7 +7,6 @@ import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user_provider.dart';
-import 'components/btm_delete_user.dart';
 import 'user_course.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -22,7 +21,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // print('user id ${widget.userId}');
+    print('user id ${widget.userId}');
     Future.microtask(() => Provider.of<UserProvider>(context, listen: false).fetchUserById(widget.userId));
     
   }
@@ -30,31 +29,27 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
-    // print('selected user ${userProvider.selectedUser!.username}');
     // if (user == null) {
     //   return Center(child: Text("No user logged in"));
     // }
-
+    final imageUrl = (userProvider.selectedUser != null && 
+                    userProvider.selectedUser!.avatar != null &&
+                    userProvider.selectedUser!.avatar!.isNotEmpty)
+      ? userProvider.selectedUser!.avatar!
+      : '';
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: primaryColor,
         elevation: 0,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back, color: Colors.black),
-        //   onPressed: () {
-        //     // Back button action
-        //   },
-        // ),
-        title: Text(
-          "User Profile",
-          style: GoogleFonts.poppins(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: whiteColor,
-          ),
-        ),
-        centerTitle: true,
+        title: DefaultTextWg(text: 'User Profile', fontSize: 24, fontColor: whiteColor,),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 24, color: whiteColor,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ), 
+        centerTitle: false,
       ),
       body: userProvider.isLoading
           ? Center(child: CircularProgressIndicator()) // Show loading
@@ -69,9 +64,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         // User Avatar
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage: NetworkImage(
-                            userProvider.selectedUser!.avatar, // Fix: Load image from API
-                          ),
+                          backgroundImage:  userProvider.selectedUser!.avatar.isNotEmpty
+                        ? NetworkImage(imageUrl)
+                        : AssetImage(noUserImagePath) as ImageProvider,                               
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -160,28 +155,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ),
                             minimumSize: const Size(double.infinity, 50),
                           ),
-                          child: Text(
-                            "Edit Profile",
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child: DefaultTextWg(text: "Edit Profile", fontColor: whiteColor,) 
                         ),
                         const SizedBox(height: 16),
 
-                        // Joined Date & Delete Button
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            DefaultTextWg(
-                              text: "Joined Date: 24 Aug 2024",
-                              fontColor: Colors.grey,
-                            ),
-                            BtmDeleteUser(),
-                          ],
-                        ),
+                        // CustomDeleteBtm(
+                        //   fct: ()=> {}, 
+                        //   lastDate: GlobalMethods.formatDate(userProvider.selectedUser!.createdOn.toString())),
+                        // Joined Date & Delete Button                        
                       ],
                     ),
                   ),
@@ -206,12 +187,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ),
             const SizedBox(height: 10),
             _buildInfoRow('Username', userProvider.selectedUser!.username),
-            const Divider(),
-            _buildInfoRow('Fullname', userProvider.selectedUser!.username),
+            // const Divider(),
+            // _buildInfoRow('Fullname', userProvider.selectedUser!.username),
             const Divider(),
             _buildInfoRow('Email', userProvider.selectedUser!.email),
             const Divider(),
-            _buildInfoRow('Contact', userProvider.selectedUser!.email),
+            _buildInfoRow('Contact', userProvider.selectedUser!.phoneNumber ?? '-'),
           ],
         ),
       ),

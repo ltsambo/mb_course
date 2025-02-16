@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -86,6 +87,7 @@ class UserProvider with ChangeNotifier {
     required String username,
     required String email,
     required String role,
+    String? phoneNumber,
     required String password,
     required String confirmPassword,
   }) async {
@@ -108,6 +110,7 @@ class UserProvider with ChangeNotifier {
       },
       body: jsonEncode({
         "username": username,
+        "phone_number": phoneNumber,
         "email": email,
         "role": role,
         "password": password,
@@ -125,6 +128,37 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  Future<Map<String, dynamic>> updateUserDetails({
+    required int userId,
+    required Map<String, dynamic> updatedData,
+    File? avatar,
+  }) async {
+    final url = Uri.parse(userUpdateUrl(userId));
+    final token = await AuthHelper.getToken();
+    final request = http.MultipartRequest('PUT', url)
+      ..headers['Authorization'] = 'Bearer $token';
+
+    // Add form data
+    updatedData.forEach((key, value) {
+      request.fields[key] = value.toString();
+    });
+
+    // Add image if available
+    if (avatar != null) {
+      request.files.add(await http.MultipartFile.fromPath('avatar', avatar.path));
+    }
+
+    // Send request
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body); // Return parsed JSON response
+    } else {
+      throw Exception('Failed to update user: ${response.body}');
+    }
+  }
+
   // 🔹 Login User
   Future<String?> loginUser({
     required String username,
@@ -133,7 +167,7 @@ class UserProvider with ChangeNotifier {
     _setLoading(true);
 
     var url = Uri.parse(loginUrl);
-    print('username $username password $password');
+    // print('username $username password $password');
     var response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -142,14 +176,15 @@ class UserProvider with ChangeNotifier {
         "password": password,
       }),
     );
-    print('response ${response.statusCode}');
+    // print('response ${response.statusCode}');
 
     _setLoading(false);
     var jsonResponse = jsonDecode(response.body);
-    print('response data $jsonResponse');
+    // print('response data $jsonResponse');
     if (response.statusCode == 200 && jsonResponse["status"] == "success") {
-      _currentUser = UserModel.fromJson(jsonResponse["data"]); // Parse response into UserModel
-
+      _currentUser = UserModel.fromJson(jsonResponse["data"]); // Parse response into UserModel    
+      print('current user $_currentUser')  ;
+      print('current user image ${_currentUser?.image}')  ;
       // SharedPreferences prefs = await SharedPreferences.getInstance();
       // await prefs.setString('accessToken', _currentUser!.accessToken);
       // await prefs.setString('refreshToken', _currentUser!.refreshToken);
@@ -171,7 +206,6 @@ class UserProvider with ChangeNotifier {
       _handleSessionExpired();
       return;
     }
-
     var url = Uri.parse(userListUrl);
     var response = await http.get(
       url,
@@ -195,7 +229,6 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  // 🔹 Fetch User by ID
   Future<void> fetchUserById(int userId) async {
     _setLoading(true);
 
@@ -207,7 +240,6 @@ class UserProvider with ChangeNotifier {
     }
 
     var url = Uri.parse(userProfileUrl(userId));
-    print('retrieve url $url/');
     var response = await http.get(
       url,
       headers: {
@@ -221,8 +253,7 @@ class UserProvider with ChangeNotifier {
     // print('profile retrieve ${response.statusCode}');
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
-      _selectedUser = UserProfileModel.fromJson(jsonResponse["data"]);
-      // print('selected user $_selectedUser');
+      _selectedUser = UserProfileModel.fromJson(jsonResponse["data"]);      
       notifyListeners();
     } else {
       print("Failed to load user details");

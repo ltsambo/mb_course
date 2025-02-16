@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/providers/course_porvider.dart';
 import 'package:mb_course/screens/order/order_screen.dart';
+import 'package:mb_course/services/global_methods.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
@@ -14,14 +15,17 @@ import '../screens/course/course_update.dart';
 
 class CourseCard extends StatelessWidget {
   final Course course;
+  final Color cardColor;
 
-  const CourseCard({super.key, required this.course});
+  const CourseCard({super.key, required this.course, this.cardColor = whiteColor});
 
   @override
   Widget build(BuildContext context) {    
     // print('course ${course.title} ${course.isPurchased}');   
-    return Card(
+    return Card(  
+      color: primaryColor,    
       child: ListTile(
+        selectedColor: primaryColor,
         leading: course.coverImage == null
                 ? Image.asset('assets/not-available.jpeg', width: 50, height: 50, fit: BoxFit.cover)
                 : Image.network(course.coverImage!, width: 50, height: 50, fit: BoxFit.cover,
@@ -35,13 +39,13 @@ class CourseCard extends StatelessWidget {
                   );
                 },
               ),// Image.network(course.coverImage!, width: 50, height: 50),
-        title: DefaultTextWg(text: course.title),
+        title: DefaultTextWg(text: course.title, fontColor: whiteColor, fontSize: 20,),
         isThreeLine: true,        
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${course.totalDuration} | ${course.lessons!.length} lessons'),   
-            DefaultTextWg(text: '${course.price.toStringAsFixed(0)} ks', fontColor: primaryColor),  
+            DefaultTextWg(text: '${course.totalDuration} | ${course.lessons!.length} lessons', fontColor: whiteColor,),   
+            DefaultTextWg(text: '${GlobalMethods.formatPrice(course.price.toStringAsFixed(0))} ks', fontColor: whiteColor),  
             // DefaultTextWg(text: 'InCart ${course.inCart}', fontColor: primaryColor),   
             // DefaultTextWg(text: 'IsPurchased ${course.isPurchased}', fontColor: primaryColor),   
             // DefaultTextWg(text: 'IsOrdered ${course.isOrdered}', fontColor: primaryColor),   
@@ -88,7 +92,7 @@ class CourseCard extends StatelessWidget {
             )
         :           
           IconButton(
-            icon: Icon(Icons.add_shopping_cart, color: primaryColor),
+            icon: Icon(Icons.add_shopping_cart, color: whiteColor),
             onPressed: () async {
               final cartProvider = Provider.of<CartProvider>(context, listen: false);
               final courseProvider = Provider.of<CourseProvider>(context, listen: false);

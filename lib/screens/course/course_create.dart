@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/providers/user_provider.dart';
+import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -85,20 +86,17 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
       appBar: AppBar(
         backgroundColor: primaryColor,
         elevation: 0,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back, color: Colors.black),
-        //   onPressed: () {
-        //     // Back button action
-        //   },
-        // ),
-        title: Text(
-          "Create Course",
-          style: GoogleFonts.poppins(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: whiteColor,
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: whiteColor),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
+        title: DefaultTextWg(
+          text: "Create Course",
+          fontSize: 24,
+          fontColor: whiteColor,
+        ),        
         centerTitle: true,
       ),
       body: Padding(

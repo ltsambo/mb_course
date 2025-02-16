@@ -1,17 +1,23 @@
 
 class UserModel {
   final String username, email, role, accessToken, refreshToken;
+  final String? phoneNumber;
   final String image;
+  final String? modifiedOn;
+  final String? createdOn;
   final int id;
 
   UserModel({
     required this.id,
     required this.username,
     required this.email,
+    this.phoneNumber,
     required this.role,
     required this.accessToken,
     required this.refreshToken,
     required this.image,
+    this.modifiedOn,
+    this.createdOn,
   });
 
   // Convert JSON to UserModel
@@ -20,8 +26,11 @@ class UserModel {
       id: json["id"],
       username: json["username"],
       email: json["email"] ?? "",
+      phoneNumber: json["phone_number"] ?? "",
       role: json["role"] ?? "",
-      image: json["image"] ?? "",
+      image: json["avatar"] ?? '',
+      modifiedOn: json['modified_on'],
+      createdOn: json['created_on'],
       accessToken: json["access_token"],
       refreshToken: json["refresh_token"],
     );
@@ -53,15 +62,21 @@ class UserProfileModel {
   final int id;
   final String username;
   final String email;
+  final String? phoneNumber;
   final String role;
   final String avatar;
+  final String? createdOn;
+  final String? modifiedOn;
 
   UserProfileModel({
     required this.id,
     required this.username,
     required this.email,
+    this.phoneNumber,
     required this.role,
     required this.avatar,
+    required this.createdOn,
+    required this.modifiedOn,
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
@@ -69,8 +84,11 @@ class UserProfileModel {
       id: json["id"],
       username: json["username"],
       email: json["email"],
+      phoneNumber: json["phone_number"],
       role: json["role"],
-      avatar: json["avatar"] ?? "https://via.placeholder.com/150",
+      avatar: json["avatar"] ?? '',
+      createdOn: json["created_on"],
+      modifiedOn: json["modified_on"],
     );
   }
 }
@@ -80,6 +98,7 @@ class UserListModel {
   final int id;
   final String username;
   final String email;
+  final String? phoneNumber;
   final String role;
   final String image;
 
@@ -87,6 +106,7 @@ class UserListModel {
     required this.id,
     required this.username,
     required this.email,
+    this.phoneNumber,
     required this.role,
     required this.image,
   });
@@ -96,8 +116,9 @@ class UserListModel {
       id: json["id"],
       username: json["username"],
       email: json["email"],
+      phoneNumber:json['phone_number'] ?? '',
       role: json["role"],
-      image: "https://via.placeholder.com/150",  // Placeholder for now
+      image: json['avatar'] ?? '',  // Placeholder for now
     );
   }
 }

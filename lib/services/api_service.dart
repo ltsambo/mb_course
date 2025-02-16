@@ -22,35 +22,21 @@ class ApiService {
     }
   }
 
-  // Create Business
-  static Future<Business> createBusiness(Business business) async {
-    final response = await http.post(
-      Uri.parse(businessListUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(business.toJson()),
-    );
-
-    if (response.statusCode == 201) {
-      return Business.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('Failed to create business');
-    }
-  }
 
   // Update Business (PUT)
-  static Future<Business> updateBusiness(Business business) async {
-    final response = await http.put(
-      Uri.parse('$businessListUrl${business.id}/'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(business.toJson()),
-    );
+  // static Future<Business> updateBusiness(Business business) async {
+  //   final response = await http.put(
+  //     Uri.parse('$businessListUrl${business.id}/'),
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: json.encode(business.toJson()),
+  //   );
 
-    if (response.statusCode == 200) {
-      return Business.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('Failed to update business');
-    }
-  }
+  //   if (response.statusCode == 200) {
+  //     return Business.fromJson(json.decode(response.body));
+  //   } else {
+  //     throw Exception('Failed to update business');
+  //   }
+  // }
 
   // Fetch carousels
   static Future<List<Carousel>> fetchCarousels() async {

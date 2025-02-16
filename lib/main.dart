@@ -57,6 +57,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => CarouselProvider()),
         ChangeNotifierProvider(create: (_) => BusinessProvider()),
+        ChangeNotifierProvider(create: (_) => BankInfoProvider()),
+        ChangeNotifierProvider(create: (_) => PaymentBankInfoProvider()),
       ],
       child: 
       MaterialApp(

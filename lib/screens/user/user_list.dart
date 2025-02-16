@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/route/screen_export.dart';
+import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/user.dart';
@@ -24,26 +24,19 @@ class _UserListScreenState extends State<UserListScreen> {
   
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    print("user provider ${userProvider.users.length}");
+    final userProvider = Provider.of<UserProvider>(context);        
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: primaryColor,
         elevation: 0,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back, color: Colors.black),
-        //   onPressed: () {
-        //     // Back button action
-        //   },
-        // ),
-        title: Text(
-          "User List",
-          style: GoogleFonts.poppins(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: whiteColor,
-          ),
-        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 24, color: whiteColor,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),  
+        title: DefaultTextWg(text: "User List", fontSize: 24, fontColor: whiteColor,),               
         actions: [
           IconButton(
             icon: const Icon(Icons.person_add_alt, color: whiteColor),
@@ -57,17 +50,24 @@ class _UserListScreenState extends State<UserListScreen> {
             },
           ),
         ],
-        centerTitle: true,
-      ),
-      backgroundColor: whiteColor,
+        centerTitle: false,
+      ),      
       body: userProvider.isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
+          ? Center(child: 
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center, 
+            children: [
+              CircularProgressIndicator(),
+              DefaultTextWg(text: 'Loading')
+            ],)
+          ) //  CircularProgressIndicator()
+          : ListView.builder(            
               itemCount: userProvider.users.length,
               itemBuilder: (context, index) {
-                final UserListModel user = userProvider.users[index];
+                final UserListModel user = userProvider.users[index];    
+                print('user image ${user.image}')            ;
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -77,27 +77,22 @@ class _UserListScreenState extends State<UserListScreen> {
                       contentPadding: const EdgeInsets.all(16.0),
                       leading: CircleAvatar(
                         radius: 28,
-                        backgroundImage: NetworkImage(user.image),
+                        backgroundImage: user.image != null && user.image!.isNotEmpty
+                        ? NetworkImage(user.image!)
+                        : AssetImage(noUserImagePath) as ImageProvider,                        
                       ),
-                      title: Text(
-                        user.username,
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.deepPurple,
-                        ),
-                      ),
+                      title: DefaultTextWg(text: user.username, fontColor: Colors.deepPurple, fontSize: 16,) ,
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(user.role, style: TextStyle(color: Colors.black)),
-                          Text(user.email, style: TextStyle(color: Colors.grey)),
+                          DefaultTextWg(text: user.role, fontWeight: FontWeight.normal,),
+                          DefaultTextWg(text: user.email, fontWeight: FontWeight.normal, fontColor: Colors.grey,),
                         ],
                       ),
                       trailing: CircleAvatar(
                         backgroundColor: primaryColor,
                         child: IconButton(
-                          icon: Icon(Icons.arrow_forward, color: whiteColor),
+                          icon: Icon(Icons.arrow_forward_ios, color: whiteColor),
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -116,50 +111,3 @@ class _UserListScreenState extends State<UserListScreen> {
     );
   }
 }
-
-// class UserListScreen extends StatelessWidget {
-//   const UserListScreen({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final List<Map<String, dynamic>> users = [
-//       {
-//         "name": "Admin",
-//         "role": "Admin",
-//         "email": "admin.moeyoga@gmail.com",
-//         "image": "https://via.placeholder.com/150", // Replace with a URL or asset path
-//         "buttonColor": Colors.green,
-//       },
-//       {
-//         "name": "Cho May Ko",
-//         "role": "Cho May Ko",
-//         "email": "michiko8894@gmail.com",
-//         "image": "https://via.placeholder.com/150", // Replace with a URL or asset path
-//         "buttonColor": Colors.orange,
-//       },
-//       {
-//         "name": "Moe Moe",
-//         "role": "Moe Moe",
-//         "email": "moemoe@gmail.com",
-//         "image": "https://via.placeholder.com/150", // Replace with a URL or asset path
-//         "buttonColor": Colors.orange,
-//       },
-//       {
-//         "name": "Thazin",
-//         "role": "Thazin",
-//         "email": "thazinhnin1023@gmail.com",
-//         "image": "https://via.placeholder.com/150", // Replace with a URL or asset path
-//         "buttonColor": Colors.green,
-//       },
-//       {
-//         "name": "Tin Zaw Win",
-//         "role": "Tin Zaw Win",
-//         "email": "tinzawwin@gmail.com",
-//         "image": "https://via.placeholder.com/150", // Replace with a URL or asset path
-//         "buttonColor": Colors.orange,
-//       },
-//     ];
-
-    
-//   }
-// }

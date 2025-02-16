@@ -157,4 +157,9 @@ class GlobalMethods {
       return 'Invalid Date';
     }
   }
+
+  static String formatPrice(dynamic price) {
+    double parsedPrice = double.tryParse(price.toString()) ?? 0;
+    return NumberFormat('#,###').format(parsedPrice);
+  }
 }

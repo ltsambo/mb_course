@@ -1,44 +1,74 @@
 // import 'dart:convert';
 
 class Business {
-  int? id;
-  String name;
-  String? logo;
-  String contact;
-  String? email;
-  String? address;
+  final int id;
+  final String name;
+  final String contact;
+  final String email;
+  final String address;
 
   Business({
-    this.id,
+    required this.id,
     required this.name,
-    this.logo,
     required this.contact,
-    this.email,
-    this.address,
+    required this.email,
+    required this.address,
   });
 
   factory Business.fromJson(Map<String, dynamic> json) {
     return Business(
-      id: json['id'],
-      name: json['name'],
-      logo: json['logo'],
-      contact: json['contact'],
-      email: json['email'],
-      address: json['address'],
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? 0,
+      name: json['name'] ?? '',
+      contact: json['contact'] ?? '',
+      email: json['email'] ?? '',
+      address: json['address'] ?? '',
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'logo': logo,
-      'contact': contact,
-      'email': email,
-      'address': address,
-    };
   }
 }
 
+
+class BankInfo {
+  final int id;
+  final String title;
+  final String logo;
+
+  BankInfo({required this.id, required this.title, required this.logo});
+
+  factory BankInfo.fromJson(Map<String, dynamic> json) {
+    return BankInfo(
+      id: json['id'] ?? 0,
+      title: json['title'] ?? "Unknown",
+      logo: json['logo'] ?? "",
+    );
+  }
+}
+
+
+class PaymentBankInfo {
+  final int id;
+  final BankInfo bank;
+  final String logo;
+  final String accountNo;
+  final String name;
+
+  PaymentBankInfo({
+    required this.id,
+    required this.bank,
+    required this.logo,
+    required this.accountNo,
+    required this.name,
+  });
+
+  factory PaymentBankInfo.fromJson(Map<String, dynamic> json) {
+    return PaymentBankInfo(
+      id: json['id'] ?? 0,
+      bank: BankInfo.fromJson(json['bank'] ?? {}), // Parse nested bank object
+      logo: json['logo'] ?? '',
+      accountNo: json['account_no'] ?? 'No Account',
+      name: json['name'] ?? 'No Name',
+    );
+  }
+}
 // class BusinessProfile {
 //   final String logo, name, email, contact, address, description;
 //   final List<SocialProfile> socialProfiles;

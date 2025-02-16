@@ -9,6 +9,10 @@ const Color primaryColor = Color(0xFF4A6057);
 const Color titleColor = Color(0xFF4A6057);
 const Color backgroundColor = Color(0xFFF8EFE4);
 
+const noUserImagePath = 'assets/not-available.jpeg';
+const noVideoImagePath = 'assets/logo/main_logo.png';
+const logoImagePath = 'assets/logo/main_logo.png';
+
 const managementItems = [
   {
     "icon": Icons.group,

@@ -14,7 +14,7 @@ class CarouselScreen extends StatefulWidget {
 }
 
 class _CarouselScreenState extends State<CarouselScreen> {
-  final TextEditingController _titleController = TextEditingController();
+  // final TextEditingController _titleController = TextEditingController();
 
   @override
   void initState() {

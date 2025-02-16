@@ -1,18 +1,24 @@
 // String _baseUrl = "http://www.ltsambosg.com";
-String _baseUrl = "http://10.10.11.11:8000/api";
+String _baseUrl = "http://192.168.68.51:8000/api";
 
 // Business
 String businessListUrl = "$_baseUrl/business/businesses/";
 String carouselistUrl = "$_baseUrl/business/carousels/";
 
+String bankInfoUrl = "$_baseUrl/business/bank-info";
+String paymentBankInfoUrl = "$_baseUrl/business/payment-bank-info";
+
 // Auth 
 String refreshTokenUrl = "$_baseUrl/user/token/refresh/";
 String registerUrl = "$_baseUrl/user/register/";
+String userUpdateUrl(int userId) {
+  return "$_baseUrl/user/update/$userId/";
+}
 String adminUserCreateUrl = "$_baseUrl/user/admin/create-user/";
 String userListUrl = "$_baseUrl/user/list/";
 
 String userProfileUrl(int userId) {
-  return "$_baseUrl/user/$userId";
+  return "$_baseUrl/user/$userId/";
 }
 
 String changePasswordUrl = "$_baseUrl/user/password/change/";

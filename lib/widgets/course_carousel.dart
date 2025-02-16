@@ -12,7 +12,7 @@ class CourseCarousel extends StatelessWidget {
     final carousels = Provider.of<CarouselProvider>(context).carousels;
     return CarouselSlider(
       options: CarouselOptions(
-        height: 200.0,
+        height: 150.0,
         autoPlay: true,
         enlargeCenterPage: true,
         aspectRatio: 16 / 9,

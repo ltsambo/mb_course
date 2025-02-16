@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
+import 'package:mb_course/providers/business.dart';
 import 'package:mb_course/providers/order_provider.dart';
 import 'package:mb_course/screens/auth/change_password.dart';
 import 'package:mb_course/screens/auth/login_screen.dart';
 import 'package:mb_course/screens/business/contact_us.dart';
+import 'package:mb_course/screens/business/update_contact.dart';
 import 'package:mb_course/screens/carousel/carousel_screen.dart';
 import 'package:mb_course/screens/course/admin_course_list.dart';
 import 'package:mb_course/screens/order/accept_payment.dart';
@@ -16,6 +18,7 @@ import 'package:badges/badges.dart' as badges;
 import '../../providers/user_provider.dart';
 import '../../utlis/auth_utlis.dart';
 import '../../widgets/section_widgets.dart';
+import '../business/list_payment_bank_info.dart';
 import '../user/user_list.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -37,11 +40,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);   
     final orderProvider = Provider.of<OrderProvider>(context);    
-    print('object ${orderProvider.statusCounts}');
-    
+
     final toPayCount = orderProvider.statusCounts['pending_upload'] ?? 0;
     final pendingAcceptanceCount = orderProvider.statusCounts['pending_acceptance'] ?? 0;
     final acceptedCount = orderProvider.statusCounts['accepted'] ?? 0;
+    
     // print('status count ${orderProvider['status_count']}');
     return Scaffold(
       backgroundColor: backgroundColor, // Light beige background
@@ -147,7 +150,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => UserListScreen(), 
+                            builder: (context) => UpdateBusinessScreen(), 
+                          ),
+                        );
+                      },
+                    ),
+                    BuildSubMenuItemWg(
+                      text: "Payment Info",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ListPaymentBankInfoScreen(), 
                           ),
                         );
                       },

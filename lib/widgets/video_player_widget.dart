@@ -1,5 +1,6 @@
 // widgets/video_player_widget.dart
 import 'package:flutter/material.dart';
+import 'package:mb_course/consts/consts.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
@@ -76,7 +77,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: _hasError 
-      ? Image.asset('assets/not-available.jpeg')
+      ? Image.asset(noVideoImagePath)
       :Padding(
         padding: const EdgeInsets.all(10.0), // Add padding around the player
         child: _controller.value.isInitialized

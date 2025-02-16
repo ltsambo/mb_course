@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../consts/consts.dart';
 import '../../services/global_methods.dart';
+import '../business/components/bank_info_list.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key});
@@ -96,6 +97,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 fontSize: 24,
                 fontColor: whiteColor,
               ),
+              leading: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back, color: whiteColor,)),
             ),
             body: Column(
               children: [
@@ -157,6 +159,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 fontSize: 24,
                 fontColor: whiteColor,
               ),
+              leading: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back, color: whiteColor,)),
+              
               // actions: [
               //   IconButton(
               //     onPressed: () {
@@ -208,47 +212,29 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .spaceBetween,
+                                        children: [
+                                          TextButton(onPressed: () => Navigator.push(
+                                              context, MaterialPageRoute(builder: (context) => OrderDetailsPage(order: item))
+                                            ), child: Text(
+                                            'Order Id: ${item['order_uuid']}',
+                                            style: defaultTextStyle(fontColor: primaryColor),
+                                            maxLines: 2,
+                                            overflow: TextOverflow
+                                                .ellipsis,
+                                          ),),                                                        
+                                          // CustomBadge(text: item['order_status'], backgroundColor: badgeColor),                                                        
+                                          DefaultTextWg(text: item['order_status'], fontColor: badgeColor, fontWeight: FontWeight.normal, fontSize: 14),
+                                        ],
+                                      ),
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              // Product Info
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        TextButton(onPressed: () => Navigator.push(
-                                                            context, MaterialPageRoute(builder: (context) => OrderDetailsPage(order: item))
-                                                          ), child: Text(
-                                                          'Order Id: ${item['order_uuid']}',
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 14),
-                                                          maxLines: 2,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),),                                                        
-                                                        // CustomBadge(text: item['order_status'], backgroundColor: badgeColor),                                                        
-                                                        DefaultTextWg(text: item['order_status'], fontColor: badgeColor, fontWeight: FontWeight.normal, fontSize: 14),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),                                                
-                                              ),                                              
-                                            ],
-                                          ),
+                                          
                                           SizedBox(height: 16),
                                           Text(
                                               'Purchase on: ${GlobalMethods.formatDate(item['order_date'])}',
@@ -287,24 +273,30 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                RichText(
-                                                  text: TextSpan(
-                                                    text:
-                                                        'Check Payment Methods here ',
-                                                    style: TextStyle(
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (context) => PaymentMethodsPopup(),
+                                                    );
+                                                  },
+                                                  child: RichText(
+                                                    text: TextSpan(
+                                                      text: 'Check Payment Methods here ',
+                                                      style: TextStyle(
                                                         color: Colors.black,
-                                                        fontSize: 14),
-                                                    children: [
-                                                      TextSpan(
-                                                        text: '',
-                                                        style: TextStyle(
-                                                            color: Colors.red,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                        fontSize: 14,
                                                       ),
-                                                      TextSpan(text: ''),
-                                                    ],
+                                                      children: [
+                                                        TextSpan(
+                                                          text: '',
+                                                          style: TextStyle(
+                                                            color: Colors.red,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                                 Icon(Icons.arrow_forward_ios,
@@ -322,7 +314,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                             children: [
                                               OutlinedButton(
                                                 onPressed: () => _pickReceiptImage(orderId),
-                                                child: Text(receiptImage == null ? "Select Screenshot" : "Screenshot: ${receiptImage.path.split('/').last}"),
+                                                child: Text(receiptImage == null ? "Select Screenshot" : "Selected"),
                                                 style: OutlinedButton.styleFrom(
                                                   padding: EdgeInsets.symmetric(
                                                       horizontal: 20,
@@ -371,5 +363,28 @@ class _OrderListScreenState extends State<OrderListScreen> {
               ),
             ),
           );
+  }
+}
+
+
+class PaymentMethodsPopup extends StatelessWidget {
+  const PaymentMethodsPopup({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: DefaultTextWg(text: 'Payment Methods', fontSize: 20,),
+      content: SizedBox(
+        width: double.maxFinite,
+        height: 400, // Adjust height as needed
+        child: BankInfoListWidget(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text("Close"),
+        ),
+      ],
+    );
   }
 }

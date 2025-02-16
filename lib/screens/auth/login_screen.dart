@@ -101,8 +101,14 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Image.asset(
+                    logoImagePath, // Replace with your butterfly icon
+                    width: 80,
+                    height: 80,
+                  ),
+                  const SizedBox(height: 8),
                   DefaultTextWg(
-                    text: "Test App",
+                    text: "Moe Yoga",
                     fontSize: 28,
                     fontColor: titleColor,
                   ),
