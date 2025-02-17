@@ -1,5 +1,6 @@
 // String _baseUrl = "http://www.ltsambosg.com";
-String _baseUrl = "http://192.168.68.51:8000/api";
+String _domainUrl = "http://192.168.68.54:8000";
+String _baseUrl = "http://192.168.68.54:8000/api";
 
 // Business
 String businessListUrl = "$_baseUrl/business/businesses/";

@@ -197,6 +197,8 @@ class WelcomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       color: const Color(0xFFFDF5EC), // Light beige background
@@ -232,7 +234,7 @@ class WelcomeHeader extends StatelessWidget {
                     TextSpan(
                       text: username,
                       style: const TextStyle(
-                        color: Color(0xFF59786D), // Greenish color for username
+                        color: primaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -252,13 +254,51 @@ class WelcomeHeader extends StatelessWidget {
             ],
           ),
 
+          if (userProvider.isAuthenticated && userProvider.currentUser != null)          
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserProfileScreen(userId: userProvider.currentUser!.id),
+                ),
+              );               
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: CircleAvatar(
+                radius: 30,
+                backgroundImage: profileImageUrl != null
+                    ? NetworkImage(profileImageUrl)
+                    : AssetImage(noUserImagePath) as ImageProvider,                               
+                ),     
+              )            
+            ),
+          )
+        else
+        
+          TextButton(
+            // color: whiteColor,
+            child: DefaultTextWg(text: 'Login', fontSize: 18, fontColor: primaryColor,),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserLoginScreen(),
+                ),
+              );
+            },
+          ),
           // Right Section: User Profile Picture (Prevents Null Errors)
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: (profileImageUrl.isNotEmpty)
-                ? NetworkImage(profileImageUrl)
-                : AssetImage(noUserImagePath) as ImageProvider,                               
-          ),   
+          // if (userProvider.isAuthenticated && userProvider.currentUser != null)
+          //   CircleAvatar(
+          //     radius: 30,
+          //     backgroundImage: (profileImageUrl.isNotEmpty)
+          //         ? NetworkImage(profileImageUrl)
+          //         : AssetImage(noUserImagePath) as ImageProvider,                               
+          //   ),             
         ],
       ),
     );

@@ -19,62 +19,81 @@ class CourseDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('course status ${course.isPurchased} - C ${course.inCart} - Li ${course.isOrdered}');
+    bool isPurchased = course.isPurchased ?? false;
+    bool inCart = course.inCart ?? false;
+    bool isOrdered = course.isOrdered ?? false;
     return Scaffold(
       backgroundColor: backgroundColor, // Light Beige Background
       appBar: AppBar(
         backgroundColor: primaryColor,
-        // title: DefaultTextWg(text: course.title, fontColor: whiteColor, fontSize: 20,),
+        title: DefaultTextWg(text: course.title, fontColor: whiteColor, fontSize: 20,),
         leading: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back, color: whiteColor,)),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [         
             // Course Title & Price Section
             DefaultTextWg(text: course.title, fontSize: 28, fontWeight: FontWeight.w800,),            
             SizedBox(height: 8),
             Row(
-              children: [     
-                (course.isPurchased ?? false)     
-                ?  CustomElevatedButton(text: 'Purchased', onPressed: () {
-                        // Navigate to the cart screen                        
-                      },)       
-                : (course.inCart ?? false)
-                  ? CustomElevatedButton(text: 'Go to Cart', onPressed: () {
-                        // Navigate to the cart screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CartScreen()),
+              children: [
+                Expanded( // ✅ Ensures button & price have space to render properly
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 7), // Adjust padding
+                      backgroundColor: isPurchased ? Colors.grey
+                                      : inCart ? Colors.blue
+                                      : isOrdered ? Colors.orange
+                                      : primaryColor, // Different colors for different states
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8), // Rounded corners
+                      ),
+                      minimumSize: Size(80, 32),
+                      elevation: 0,
+                    ),
+                    onPressed: () {
+                      if (inCart) {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen()));
+                      } else if (isOrdered) {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderListScreen()));
+                      } else if (!isPurchased) {
+                        final cartProvider = Provider.of<CartProvider>(context, listen: false);
+                        final courseProvider = Provider.of<CourseProvider>(context, listen: false);
+                        
+                        cartProvider.addCourseToCart(
+                          courseId: course.id.toString(),
+                          price: course.price,
+                          context: context,
                         );
-                      },)                  
-                : (course.isOrdered ?? false)
-                  ? CustomElevatedButton(text: 'Check Order', onPressed: () {
-                        // Navigate to the cart screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => OrderListScreen()),
-                        );
-                      },)
-                : CustomElevatedButton(text: 'Add to cart', onPressed: () async {
-                      final cartProvider = Provider.of<CartProvider>(context, listen: false);
-                      final courseProvider = Provider.of<CourseProvider>(context, listen: false);
-                      await cartProvider.addCourseToCart(
-                        courseId: course.id.toString(),
-                        price: course.price,
-                        context: context
-                      );
-                      await courseProvider.fetchCourses();
-                      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added course to cart!')));
+
+                        Future.delayed(Duration(milliseconds: 100), () async {
+                          await courseProvider.fetchCourses();
+                        });
+                      }
                     },
-                ),                            
-                // Add to Cart Button
-                
-                SizedBox(width: 16),
+                    child: Text(
+                      isPurchased ? 'Purchased' 
+                        : inCart ? 'View Cart' 
+                        : isOrdered ? 'View Order' 
+                        : 'Add to Cart',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white, // Ensures text is visible on the button
+                      ),
+                    ),
+                  ),
+
+                ),
+                SizedBox(width: 16),  // ✅ Make sure there is space for this
                 DefaultTextWg(text: '${course.price.toString()} Ks', fontSize: 20,),
-                // Price                
               ],
             ),
+
             SizedBox(height: 16),
             DefaultTextWg(text: course.description!, fontWeight: FontWeight.w200, fontColor: Colors.black54,),
             // Course Description            
@@ -90,30 +109,39 @@ class CourseDetailScreen extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  course.demoVideo == null ? Image.asset('assets/not-available.jpeg'):
-                  VideoPlayerWidget(url: course.demoVideo!),
+                  if (course.demoVideo == null) 
+                    Column(
+                      children: [
+                        Image.asset(noVideoImagePath), 
+                        DefaultTextWg(text: 'Error on video loading!'),
+                      ],
+                    )
+                  else
+                    VideoPlayerWidget(url: course.demoVideo!),  // ✅ Only load if URL is not null
                 ],
               ),
             ),
+
             SizedBox(height: 16),
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: course.lessons!.length,              
+              itemCount: course.lessons != null ? course.lessons!.length : 0,  // ✅ Null check
               itemBuilder: (context, index) {
                 final lesson = course.lessons![index];
+
                 return _buildLessonItem(
-                  image: '', 
-                  title: lesson.title, 
+                  image: '',
+                  title: lesson.title,
                   duration: '${lesson.duration.toStringAsFixed(0)} mins',
                   isDemo: lesson.isDemo,
                   isPurchased: course.isPurchased ?? false,
                   videoUrl: lesson.video.toString(),
-                  context: context
+                  context: context,
                 );
-                
-              }
+              },
             ),
+
         
             // Lessons List
             // _buildLessonItem(
@@ -204,18 +232,25 @@ class CourseDetailScreen extends StatelessWidget {
   }
 
   void _showVideoPopup(BuildContext context, String videoUrl) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: VideoPlayerWidget1(videoUrl: videoUrl), // ✅ Use VideoPlayerWidget
-        );
-      },
-    );
+    VideoPlayerController controller = VideoPlayerController.network(videoUrl);
+    
+    controller.initialize().then((_) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: VideoPlayerWidget(url: videoUrl),
+          );
+        },
+      ).then((_) {
+        controller.dispose(); // Dispose video player when dialog is closed
+      });
+    });
   }
+
 
 }
 

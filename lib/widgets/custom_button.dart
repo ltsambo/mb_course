@@ -10,14 +10,16 @@ class CustomElevatedButton extends StatelessWidget {
   final Color? textColor;
   final double? borderRadius;
   final double? fontSize;
+  final double? paddingHorizontal;
 
-  const CustomElevatedButton({
+  CustomElevatedButton({
     required this.text,
     required this.onPressed,
     this.color,
     this.textColor,
     this.borderRadius,
     this.fontSize,
+    this.paddingHorizontal = 100.00,
     Key? key,
   }) : super(key: key);
 
@@ -27,12 +29,12 @@ class CustomElevatedButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         padding:
-            const EdgeInsets.symmetric(horizontal: 100, vertical: 16),
+          EdgeInsets.symmetric(horizontal: paddingHorizontal as double, vertical: 16),
         backgroundColor: color ??  primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? 12.0),          
         ),
-        minimumSize: const Size(double.infinity, 50),
+        minimumSize: Size(double.infinity, 50),
       ),
       child: DefaultTextWg(text: text, fontColor: color ?? whiteColor,)
     );    
