@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
+import 'package:mb_course/services/global_methods.dart';
 import 'package:mb_course/widgets/custom_button.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:mb_course/widgets/lesson_card.dart';
@@ -90,7 +91,7 @@ class CourseDetailScreen extends StatelessWidget {
 
                 ),
                 SizedBox(width: 16),  // ✅ Make sure there is space for this
-                DefaultTextWg(text: '${course.price.toString()} Ks', fontSize: 20,),
+                DefaultTextWg(text: '${GlobalMethods.formatPrice(course.price.toString())} Ks', fontSize: 20,),
               ],
             ),
 
