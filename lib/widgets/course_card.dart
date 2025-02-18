@@ -27,12 +27,12 @@ class CourseCard extends StatelessWidget {
       child: ListTile(
         selectedColor: primaryColor,
         leading: course.coverImage == null
-                ? Image.asset('assets/not-available.jpeg', width: 50, height: 50, fit: BoxFit.cover)
+                ? Image.asset(noUserImagePath, width: 50, height: 50, fit: BoxFit.cover)
                 : Image.network(course.coverImage!, width: 50, height: 50, fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   // Show fallback image when the network image fails to load
                   return Image.asset(
-                    'assets/not-available.jpeg',
+                    noUserImagePath,
                     width: 50,
                     height: 50,
                     fit: BoxFit.cover,
@@ -127,15 +127,26 @@ class AdminCourseCard extends StatelessWidget {
     // print('admin course card ${course.coverImage}');
     return Card(
       child: ListTile(
-        leading: course.coverImage != null ? Image.network(course.coverImage!, width: 50, height: 50, fit: BoxFit.cover)
-                : Image.asset('assets/not-available.jpeg', width: 50, height: 50, fit: BoxFit.cover),
+        leading: course.coverImage == null
+                ? Image.asset(noVideoImagePath, width: 50, height: 50, fit: BoxFit.cover)
+                : Image.network(course.coverImage!, width: 50, height: 50, fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  // Show fallback image when the network image fails to load
+                  return Image.asset(
+                    noUserImagePath,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
         title: DefaultTextWg(text: course.title),
         isThreeLine: true,        
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('${course.totalDuration} | ${course.lessons!.length} lessons'),   
-            DefaultTextWg(text: '${course.price.toStringAsFixed(0)} ks', fontColor: primaryColor),   
+            DefaultTextWg(text: '${GlobalMethods.formatPrice(course.price.toStringAsFixed(0))} ks', fontColor: primaryColor),   
           ],
         ),
         trailing: Container(                         

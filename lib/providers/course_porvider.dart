@@ -15,10 +15,45 @@ class CourseProvider with ChangeNotifier {
   List<Course> get courses => _courses;
   int get totalCourses => _totalCourses;
 
+  Course? _course;
+  bool _isLoading = false;
+
+  Course? get course => _course;
+  bool get isLoading => _isLoading;
+
   void clearCourses() {
     _courses.clear();
     _totalCourses = 0;
     notifyListeners();  // Notify UI that courses are cleared
+  }
+
+  Future<void> fetchCourseById(int courseId) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await http.get(Uri.parse('$coursesUrl$courseId/'));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+
+        if (responseData.containsKey("data")) {
+          _course = Course.fromJson(responseData["data"]);
+        } else {
+          throw Exception("Invalid response format");
+        }
+      } else if (response.statusCode == 404) {
+        _course = null;
+        throw Exception("Course not found");
+      } else {
+        throw Exception("Failed to fetch course");
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> fetchCourses() async {

@@ -1,6 +1,6 @@
 // String _baseUrl = "http://www.ltsambosg.com";
-String _domainUrl = "http://192.168.68.54:8000";
-String _baseUrl = "http://192.168.68.54:8000/api";
+
+String _baseUrl = "http://192.168.68.57:8000/api";
 
 // Business
 String businessListUrl = "$_baseUrl/business/businesses/";
@@ -38,6 +38,9 @@ String courseUpdateUrl(int courseId) {
 String courseDeleteUrl(int courseId) {
   return "$_baseUrl/course/delete/$courseId/";
 }
+
+// lesson
+String lessonsUrl = "$_baseUrl/course/course_lesson/lessons/";
 
 // Cart
 String addToCartUrl = "$_baseUrl/cart/add/";

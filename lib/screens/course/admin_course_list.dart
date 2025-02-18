@@ -32,6 +32,7 @@ class _AdminCourseListScreenState extends State<AdminCourseListScreen> {
         //   },
         // ),
         title: DefaultTextWg(text: "Course List", fontSize: 24, fontColor: whiteColor,),
+        leading: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back, color: whiteColor,)),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_circle_rounded, color: whiteColor),
@@ -45,15 +46,14 @@ class _AdminCourseListScreenState extends State<AdminCourseListScreen> {
             },
           ),
         ],
-        centerTitle: true,
+        centerTitle: false,
       ),
       backgroundColor: whiteColor,
       body: courses.isEmpty
         ? Center(child: CircularProgressIndicator())
         : ListView.builder(
             itemCount: courses.length,
-            itemBuilder: (context, index) {
-              print('courses ${courses[index].recommendation}');
+            itemBuilder: (context, index) {              
               return AdminCourseCard(course: courses[index]);
             },
           ),

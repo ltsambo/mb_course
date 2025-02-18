@@ -13,22 +13,36 @@ import '../../widgets/video_player_widget.dart';
 import '../cart/cart_screen.dart';
 import '../order/order_screen.dart';
 
-class CourseDetailScreen extends StatelessWidget {
+class CourseDetailScreen extends StatefulWidget {
   final Course course;
-
-  const CourseDetailScreen({required this.course});
+  const CourseDetailScreen({super.key, required this.course});
 
   @override
+  State<CourseDetailScreen> createState() => _CourseDetailScreenState();
+}
+
+class _CourseDetailScreenState extends State<CourseDetailScreen> {  
+  
+  @override  
   Widget build(BuildContext context) {
-    print('course status ${course.isPurchased} - C ${course.inCart} - Li ${course.isOrdered}');
-    bool isPurchased = course.isPurchased ?? false;
-    bool inCart = course.inCart ?? false;
-    bool isOrdered = course.isOrdered ?? false;
+    final courseProvider = Provider.of<CourseProvider>(context);
+    Course? _course = courseProvider.course;
+    print('course $_course');
+    if (_course == null) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Course Details")),
+      body: Center(child: CircularProgressIndicator()), // Show loading indicator
+    );
+  }
+    print('course status ${_course?.isPurchased} - C ${_course?.inCart} - Li ${_course?.isOrdered}');
+    bool isPurchased = _course?.isPurchased ?? false;
+    bool inCart = _course?.inCart ?? false;
+    bool isOrdered = _course?.isOrdered ?? false;
     return Scaffold(
       backgroundColor: backgroundColor, // Light Beige Background
       appBar: AppBar(
         backgroundColor: primaryColor,
-        title: DefaultTextWg(text: course.title, fontColor: whiteColor, fontSize: 20,),
+        title: DefaultTextWg(text: _course!.title, fontColor: whiteColor, fontSize: 20,),
         leading: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back, color: whiteColor,)),
       ),
       body: SingleChildScrollView(
@@ -38,7 +52,7 @@ class CourseDetailScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [         
             // Course Title & Price Section
-            DefaultTextWg(text: course.title, fontSize: 28, fontWeight: FontWeight.w800,),            
+            DefaultTextWg(text: _course.title, fontSize: 28, fontWeight: FontWeight.w800,),            
             SizedBox(height: 8),
             Row(
               children: [
@@ -66,8 +80,8 @@ class CourseDetailScreen extends StatelessWidget {
                         final courseProvider = Provider.of<CourseProvider>(context, listen: false);
                         
                         cartProvider.addCourseToCart(
-                          courseId: course.id.toString(),
-                          price: course.price,
+                          courseId: _course.id.toString(),
+                          price: _course.price,
                           context: context,
                         );
 
@@ -91,17 +105,17 @@ class CourseDetailScreen extends StatelessWidget {
 
                 ),
                 SizedBox(width: 16),  // ✅ Make sure there is space for this
-                DefaultTextWg(text: '${GlobalMethods.formatPrice(course.price.toString())} Ks', fontSize: 20,),
+                DefaultTextWg(text: '${GlobalMethods.formatPrice(_course.price.toString())} Ks', fontSize: 20,),
               ],
             ),
 
             SizedBox(height: 16),
-            DefaultTextWg(text: course.description!, fontWeight: FontWeight.w200, fontColor: Colors.black54,),
+            DefaultTextWg(text: _course.description!, fontWeight: FontWeight.w200, fontColor: Colors.black54,),
             // Course Description            
             SizedBox(height: 12),
 
             // Recommended Props
-            DefaultTextWg(text: "Recommended Props: ${course.recommendation}"),            
+            DefaultTextWg(text: "Recommended Props: ${_course.recommendation}"),            
             SizedBox(height: 16),
 
             // Video Thumbnail
@@ -110,7 +124,7 @@ class CourseDetailScreen extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  if (course.demoVideo == null) 
+                  if (_course.demoVideo == null) 
                     Column(
                       children: [
                         Image.asset(noVideoImagePath), 
@@ -118,7 +132,7 @@ class CourseDetailScreen extends StatelessWidget {
                       ],
                     )
                   else
-                    VideoPlayerWidget(url: course.demoVideo!),  // ✅ Only load if URL is not null
+                    VideoPlayerWidget(url: _course.demoVideo!),  // ✅ Only load if URL is not null
                 ],
               ),
             ),
@@ -127,16 +141,16 @@ class CourseDetailScreen extends StatelessWidget {
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: course.lessons != null ? course.lessons!.length : 0,  // ✅ Null check
+              itemCount: _course.lessons != null ? _course.lessons!.length : 0,  // ✅ Null check
               itemBuilder: (context, index) {
-                final lesson = course.lessons![index];
+                final lesson = _course.lessons![index];
 
                 return _buildLessonItem(
                   image: '',
                   title: lesson.title,
                   duration: '${lesson.duration.toStringAsFixed(0)} mins',
                   isDemo: lesson.isDemo,
-                  isPurchased: course.isPurchased ?? false,
+                  isPurchased: _course.isPurchased ?? false,
                   videoUrl: lesson.video.toString(),
                   context: context,
                 );
@@ -251,8 +265,6 @@ class CourseDetailScreen extends StatelessWidget {
       });
     });
   }
-
-
 }
 
 
