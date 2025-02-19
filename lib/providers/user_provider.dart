@@ -73,12 +73,39 @@ class UserProvider with ChangeNotifier {
     );
 
     _setLoading(false);
-    var jsonResponse = jsonDecode(response.body);
 
-    if (response.statusCode == 201 && jsonResponse["status"] == "success") {
-      return jsonResponse["message"];
-    } else {
-      return jsonResponse["message"];
+    try {
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode == 201 && jsonResponse["status"] == "success") {
+        return jsonResponse["status"];
+      } else if (response.statusCode == 400 || response.statusCode == 409) {
+      String errorMessage = "Registration failed. Please try again.";
+
+      // Check if API returns an "errors" object with field-specific messages
+      if (jsonResponse.containsKey("errors")) {
+        List<String> messages = [];
+        print('error ${jsonResponse["errors"]}');
+        jsonResponse["errors"].forEach((key, value) {
+          if (value is List) {
+            messages.add(value.join(" ")); // Join multiple messages if any
+          }
+        });
+
+        errorMessage = messages.join("\n"); // Show all error messages
+      } 
+      
+      // Fallback to "message" if no specific errors found
+      else if (jsonResponse.containsKey("message")) {
+        errorMessage = jsonResponse["message"];
+      }
+      return errorMessage;
+      }       
+      else {
+        return "An unexpected error occurred. Please try again later.";
+      }
+    } catch (e) {
+      return "Error processing response. Please check your network.";
     }
   }
 

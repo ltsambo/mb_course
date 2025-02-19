@@ -5,7 +5,7 @@ import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/providers/user_provider.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -71,12 +71,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
   //     );
   //   }
   // }
+  // void _showToast(String message) {
+  //   Fluttertoast.showToast(
+  //     msg: message,
+  //     toastLength: Toast.values(20),
+  //     gravity: ToastGravity.BOTTOM,
+  //     backgroundColor: Colors.red,
+  //     textColor: Colors.white,
+  //   );
+  // }
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("Registration Failed"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
   
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       backgroundColor: backgroundColor, // Light beige background
+      appBar: AppBar(
+        backgroundColor: backgroundColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.close, color: primaryColor),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 35.0),
@@ -85,7 +119,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 25),
-              DefaultTextWg(text: "Test App", fontSize: 24, fontColor: primaryColor,),
+              DefaultTextWg(text: "Moe Yoga", fontSize: 24, fontColor: primaryColor,),
               const SizedBox(height: 8),
               DefaultTextWg(text: "Create an Account", fontSize: 18, fontColor: blackColor,),              
               const SizedBox(height: 24),
@@ -125,22 +159,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ? CircularProgressIndicator()
                 : ElevatedButton(
                 onPressed: () async {
-                      String? message = await authProvider.registerUser(
-                        username: _usernameController.text,
-                        email: _emailController.text,
-                        password: _passwordController.text,
-                        confirmPassword: _confirmPasswordController.text,
-                        role: "student",
-                        phoneNumber: '',
-                        address: '',
-                      );
+                  String? message = await authProvider.registerUser(
+                    username: _usernameController.text,
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                    confirmPassword: _confirmPasswordController.text,
+                    role: "student",
+                    phoneNumber: '',
+                    address: '',
+                  );                  
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(message ?? "Registration failed")),
-                      );
-
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserLoginScreen()));
-                    },                    
+                  if (message == "success") {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Registration successful! Please login"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    await Navigator.pushReplacement(
+                      context, 
+                      MaterialPageRoute(builder: (context) => UserLoginScreen()),
+                    );                        
+                  } else {
+                    _showErrorDialog(context, message ?? "Registration failed");
+                  }                      
+                },                    
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor, // Green button color
                   shape: RoundedRectangleBorder(

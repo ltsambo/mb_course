@@ -26,24 +26,33 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     super.initState();
     _controller = VideoPlayerController.network(widget.url)
       ..initialize().then((_) {
+       if (mounted) {
         setState(() {});
+        _controller.play();  
+       }
       }).catchError((error) {
+        if (mounted) {
         setState(() {
           _hasError = true;
         });
+        }
       });;
     _controller.setVolume(_volume);
 
     _controller.addListener(() {
       if (_controller.value.hasError) {
+        if (mounted) {
         setState(() {
           _hasError = true;
         });
+        }
       }
       if (_controller.value.position >= _controller.value.duration && !_isCompleted) {
+        if (mounted) {
         setState(() {
           _isCompleted = true;
         });
+      }
       }
     });
   }
@@ -172,58 +181,58 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                                             _controller.seekTo(position + Duration(seconds: 10));
                                           },
                                         ),
-                                        Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            IconButton(
-                                              icon: Icon(
-                                                _volume == 0
-                                                    ? Icons.volume_off
-                                                    : Icons.volume_up,
-                                                color: Colors.white,
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  _showVolumeSlider = !_showVolumeSlider;
-                                                });
-                                              },
-                                            ),
-                                            if (_showVolumeSlider)
-                                              Positioned(
-                                                bottom: 40,
-                                                child: Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.black54,
-                                                    borderRadius: BorderRadius.circular(8),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.volume_mute,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                      Slider(
-                                                        value: _volume,
-                                                        min: 0,
-                                                        max: 1,
-                                                        onChanged: (value) {
-                                                          _adjustVolume(value);
-                                                        },
-                                                      ),
-                                                      Icon(
-                                                        Icons.volume_up,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                          ],
-                                        ),
+                                        // Stack(
+                                        //   alignment: Alignment.center,
+                                        //   children: [
+                                        //     IconButton(
+                                        //       icon: Icon(
+                                        //         _volume == 0
+                                        //             ? Icons.volume_off
+                                        //             : Icons.volume_up,
+                                        //         color: Colors.white,
+                                        //       ),
+                                        //       onPressed: () {
+                                        //         setState(() {
+                                        //           _showVolumeSlider = !_showVolumeSlider;
+                                        //         });
+                                        //       },
+                                        //     ),
+                                        //     if (_showVolumeSlider)
+                                        //       Positioned(
+                                        //         bottom: 40,
+                                        //         child: Container(
+                                        //           padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        //           decoration: BoxDecoration(
+                                        //             color: Colors.black54,
+                                        //             borderRadius: BorderRadius.circular(8),
+                                        //           ),
+                                        //           child: Row(
+                                        //             mainAxisSize: MainAxisSize.min,
+                                        //             children: [
+                                        //               Icon(
+                                        //                 Icons.volume_mute,
+                                        //                 color: Colors.white,
+                                        //                 size: 20,
+                                        //               ),
+                                        //               Slider(
+                                        //                 value: _volume,
+                                        //                 min: 0,
+                                        //                 max: 1,
+                                        //                 onChanged: (value) {
+                                        //                   _adjustVolume(value);
+                                        //                 },
+                                        //               ),
+                                        //               Icon(
+                                        //                 Icons.volume_up,
+                                        //                 color: Colors.white,
+                                        //                 size: 20,
+                                        //               ),
+                                        //             ],
+                                        //           ),
+                                        //         ),
+                                        //       ),
+                                        //   ],
+                                        // ),
                                       ],
                                     ),
                                     Row(

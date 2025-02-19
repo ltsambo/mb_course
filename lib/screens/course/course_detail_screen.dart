@@ -25,24 +25,16 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   
   @override  
   Widget build(BuildContext context) {
-    final courseProvider = Provider.of<CourseProvider>(context);
-    Course? _course = courseProvider.course;
-    print('course $_course');
-    if (_course == null) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Course Details")),
-      body: Center(child: CircularProgressIndicator()), // Show loading indicator
-    );
-  }
-    print('course status ${_course?.isPurchased} - C ${_course?.inCart} - Li ${_course?.isOrdered}');
-    bool isPurchased = _course?.isPurchased ?? false;
-    bool inCart = _course?.inCart ?? false;
-    bool isOrdered = _course?.isOrdered ?? false;
+    
+    print('course status ${widget.course.isPurchased} - C ${widget.course.inCart} - Li ${widget.course.isOrdered}');
+    bool isPurchased = widget.course.isPurchased ?? false;
+    bool inCart = widget.course.inCart ?? false;
+    bool isOrdered = widget.course.isOrdered ?? false;
     return Scaffold(
       backgroundColor: backgroundColor, // Light Beige Background
       appBar: AppBar(
         backgroundColor: primaryColor,
-        title: DefaultTextWg(text: _course!.title, fontColor: whiteColor, fontSize: 20,),
+        title: DefaultTextWg(text: widget.course.title, fontColor: whiteColor, fontSize: 20,),
         leading: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back, color: whiteColor,)),
       ),
       body: SingleChildScrollView(
@@ -52,7 +44,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [         
             // Course Title & Price Section
-            DefaultTextWg(text: _course.title, fontSize: 28, fontWeight: FontWeight.w800,),            
+            DefaultTextWg(text: widget.course.title, fontSize: 28, fontWeight: FontWeight.w800,),            
             SizedBox(height: 8),
             Row(
               children: [
@@ -80,8 +72,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                         final courseProvider = Provider.of<CourseProvider>(context, listen: false);
                         
                         cartProvider.addCourseToCart(
-                          courseId: _course.id.toString(),
-                          price: _course.price,
+                          courseId: widget.course.id.toString(),
+                          price: widget.course.price,
                           context: context,
                         );
 
@@ -105,17 +97,17 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
 
                 ),
                 SizedBox(width: 16),  // ✅ Make sure there is space for this
-                DefaultTextWg(text: '${GlobalMethods.formatPrice(_course.price.toString())} Ks', fontSize: 20,),
+                DefaultTextWg(text: '${GlobalMethods.formatPrice(widget.course.price.toString())} Ks', fontSize: 20,),
               ],
             ),
 
             SizedBox(height: 16),
-            DefaultTextWg(text: _course.description!, fontWeight: FontWeight.w200, fontColor: Colors.black54,),
+            DefaultTextWg(text: widget.course.description!, fontWeight: FontWeight.w200, fontColor: Colors.black54,),
             // Course Description            
             SizedBox(height: 12),
 
             // Recommended Props
-            DefaultTextWg(text: "Recommended Props: ${_course.recommendation}"),            
+            DefaultTextWg(text: "Recommended Props: ${widget.course.recommendation}"),            
             SizedBox(height: 16),
 
             // Video Thumbnail
@@ -124,7 +116,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  if (_course.demoVideo == null) 
+                  if (widget.course.demoVideo == null) 
                     Column(
                       children: [
                         Image.asset(noVideoImagePath), 
@@ -132,7 +124,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       ],
                     )
                   else
-                    VideoPlayerWidget(url: _course.demoVideo!),  // ✅ Only load if URL is not null
+                    VideoPlayerWidget(url: widget.course.demoVideo!),  // ✅ Only load if URL is not null
                 ],
               ),
             ),
@@ -141,16 +133,16 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: _course.lessons != null ? _course.lessons!.length : 0,  // ✅ Null check
+              itemCount: widget.course.lessons != null ? widget.course.lessons!.length : 0,  // ✅ Null check
               itemBuilder: (context, index) {
-                final lesson = _course.lessons![index];
+                final lesson = widget.course.lessons![index];
 
                 return _buildLessonItem(
                   image: '',
                   title: lesson.title,
                   duration: '${lesson.duration.toStringAsFixed(0)} mins',
                   isDemo: lesson.isDemo,
-                  isPurchased: _course.isPurchased ?? false,
+                  isPurchased: widget.course.isPurchased ?? false,
                   videoUrl: lesson.video.toString(),
                   context: context,
                 );
@@ -248,23 +240,57 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
 
   void _showVideoPopup(BuildContext context, String videoUrl) {
     VideoPlayerController controller = VideoPlayerController.network(videoUrl);
-    
+
     controller.initialize().then((_) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return Dialog(
+            backgroundColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            child: VideoPlayerWidget(url: videoUrl),
+            child: Stack(
+              children: [
+                // Video Player Widget
+                VideoPlayerWidget(url: videoUrl),
+
+                // ✅ Close Button at Top-Right
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: IconButton(
+                    icon: Icon(Icons.close, color: Colors.white, size: 28),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ).then((_) {
         controller.dispose(); // Dispose video player when dialog is closed
       });
+    }).catchError((error) {
+      // Handle error and show alert
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.transparent,
+          title: Text('Video Error'),
+          content: Text('Unable to play the video. Please check your connection or try another video.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
     });
-  }
+  }  
 }
 
 
@@ -280,15 +306,37 @@ class VideoPlayerWidget1 extends StatefulWidget {
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget1> {
   late VideoPlayerController _controller;
   bool _isLoading = true;
+  bool _hasError = false;
+  double _volume = 1.0; // Default volume (full)
 
   @override
   void initState() {
     super.initState();
     _controller = VideoPlayerController.network(widget.videoUrl)
       ..initialize().then((_) {
-        setState(() => _isLoading = false);
-        _controller.play(); // Auto-play video
+        if (mounted) {
+          setState(() => _isLoading = false);
+          _controller.play(); // Auto-play video
+        }
+      }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _hasError = true;
+          });
+        }
       });
+
+    // Listen for player errors
+    _controller.addListener(() {
+      if (_controller.value.hasError) {
+        if (mounted) {
+          setState(() {
+            _hasError = true;
+          });
+        }
+      }
+    });
   }
 
   @override
@@ -297,17 +345,49 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget1> {
     super.dispose();
   }
 
+  // Function to open video in full screen
+  void _goFullScreen() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => FullScreenVideoPlayer(controller: _controller),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        _isLoading
-            ? Center(child: CircularProgressIndicator()) // Loading indicator
-            : AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              ),
-        
+        if (_isLoading) ...[
+          Center(child: CircularProgressIndicator()), // Show loading indicator
+        ] else if (_hasError) ...[
+          // ✅ Show Error Image
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, color: Colors.red, size: 50),
+                SizedBox(height: 10),
+                Text(
+                  'Failed to load video.',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        ] else ...[
+          AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                VideoPlayer(_controller),
+                _buildControls(),
+              ],
+            ),
+          ),
+        ],
+
         // ✅ Close Button
         Positioned(
           top: 10,
@@ -322,7 +402,48 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget1> {
       ],
     );
   }
+
+  // Video controls (volume & full-screen button)
+  Widget _buildControls() {
+    return Container(
+      color: Colors.black54,
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Volume Slider
+          Expanded(
+            child: Row(
+              children: [
+                Icon(Icons.volume_up, color: Colors.white, size: 20),
+                Expanded(
+                  child: Slider(
+                    value: _volume,
+                    min: 0.0,
+                    max: 1.0,
+                    onChanged: (value) {
+                      setState(() {
+                        _volume = value;
+                        _controller.setVolume(_volume);
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Full-Screen Button
+          IconButton(
+            icon: Icon(Icons.fullscreen, color: Colors.white, size: 24),
+            onPressed: _goFullScreen,
+          ),
+        ],
+      ),
+    );
+  }
 }
+
 
 
 
