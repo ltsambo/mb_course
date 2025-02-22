@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 
 import '../models/course.dart';
-import '../providers/user_provider.dart';
+// import '../providers/user_provider.dart';
 
 class LessonCard extends StatelessWidget {  
   final Course course;
@@ -10,7 +10,7 @@ class LessonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
+    // final userProvider = Provider.of<UserProvider>(context);
     return ListView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),

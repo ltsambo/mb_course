@@ -81,7 +81,7 @@ class OrderDetailsPage extends StatelessWidget {
         _buildSummaryRow('Order ID', order_id),
         _buildSummaryRow('Order Date', GlobalMethods.formatDate(order_date)),
         // _buildSummaryRow('Payment Method', 'Cash on Delivery'),
-        _buildSummaryRow('Total Amount', total_amount.toString()),
+        _buildSummaryRow('Total Amount', '${GlobalMethods.formatPrice(total_amount.toString())} Ks'),
         const SizedBox(height: 16),
         Align(
           alignment: Alignment.centerRight,

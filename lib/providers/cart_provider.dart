@@ -204,7 +204,7 @@ class CartProvider with ChangeNotifier {
         } 
         else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Session Expired!')),
+            SnackBar(content: Text('Please login to add courses!')),
           );
         }
       } else {

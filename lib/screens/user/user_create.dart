@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/providers/user_provider.dart';
+import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
 
 
@@ -30,133 +31,96 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
       appBar: AppBar(
         backgroundColor: primaryColor,
         elevation: 0,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back, color: Colors.black),
-        //   onPressed: () {
-        //     // Back button action
-        //   },
-        // ),
-        title: Text(
-          "Create User",
-          style: GoogleFonts.poppins(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: whiteColor,
+        leading: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back, color: whiteColor,)),
+        title: DefaultTextWg(text: 'Create User', fontSize: 24, fontColor: whiteColor,),
+        centerTitle: false,
+      ),
+      body: SingleChildScrollView(
+  child: ConstrainedBox(
+    constraints: BoxConstraints(
+      minHeight: MediaQuery.of(context).size.height,  // Prevents infinite height issues
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildTextField("Username", Icons.person, _usernameController, false),
+          const SizedBox(height: 16),
+          _buildTextField("Email", Icons.email_outlined, _emailController, false),
+          const SizedBox(height: 16),
+          _buildTextField("Password", Icons.lock_outline, _passwordController, true),
+          const SizedBox(height: 16),
+          _buildTextField("Confirm Password", Icons.lock_outline, _confirmPasswordController, true),
+          const SizedBox(height: 16),
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 2,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: DropdownButton<String>(
+                value: _selectedRole,
+                isExpanded: true,
+                underline: const SizedBox(),
+                style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
+                items: roles.map((role) => DropdownMenuItem(value: role, child: Text(role))).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedRole = value!;
+                  });
+                },
+              ),
+            ),
           ),
-        ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 15.0),
-        child: Column(
-          children: [
-            // Name Field
-            _buildTextField("Username", Icons.person, _usernameController, false),
-            const SizedBox(height: 16),
-            // Email Field
-            _buildTextField("Email", Icons.email_outlined, _emailController, false),
-            const SizedBox(height: 16),            
-            // Password Field
-            _buildTextField("Password", Icons.lock_outline, _passwordController, true),
-            const SizedBox(height: 16),
-            // Confirm Password Field
-              _buildTextField("Confirm Password", Icons.lock_outline, _confirmPasswordController, true),
-            const SizedBox(height: 16),
-            // Role Dropdown
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: DropdownButton<String>(
-                  value: _selectedRole,
-                  isExpanded: true,
-                  underline: const SizedBox(), // Remove underline
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  items: roles
-                      .map(
-                        (role) => DropdownMenuItem(
-                          value: role,
-                          child: Text(role),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedRole = value!;
-                    });
+          const SizedBox(height: 24),
+          OutlinedButton(
+            onPressed: () {},
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              side: const BorderSide(color: Colors.purple),
+            ),
+            child: Text(
+              "Select Image",
+              style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.purple),
+            ),
+          ),
+          const SizedBox(height: 24),
+          authProvider.isLoading
+              ? CircularProgressIndicator()
+              : ElevatedButton(
+                  onPressed: () async {
+                    String? message = await authProvider.createUser(
+                      username: _usernameController.text,
+                      email: _emailController.text,
+                      role: _selectedRole,
+                      password: _passwordController.text,
+                      confirmPassword: _confirmPasswordController.text,
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(message ?? "User creation failed")),
+                    );
+
+                    if (message == "User created successfully") {
+                      Navigator.pop(context);
+                    }
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  child: Text(
+                    "Create",
+                    style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Select Image Button
-            OutlinedButton(
-              onPressed: () {
-                // Add image selection functionality
-              },
-              style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                side: const BorderSide(color: Colors.purple),
-              ),
-              child: Text(
-                "Select Image",
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.purple,
-                ),
-              ),
-            ),
-            const Spacer(),
-            // Create Button
-            authProvider.isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: () async {
-                      String? message = await authProvider.createUser(
-                        username: _usernameController.text,
-                        email: _emailController.text,
-                        role: _selectedRole,
-                        password: _passwordController.text,
-                        confirmPassword: _confirmPasswordController.text,
-                      );
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(message ?? "User creation failed")),
-                      );
-
-                      if (message == "User created successfully") {
-                        Navigator.pop(context);
-                      }
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor, // Button color
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                minimumSize: const Size(double.infinity, 50),
-              ),
-              child: Text(
-                "Create",
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
+    ),
+  ),
+)
+
     );
   }
 

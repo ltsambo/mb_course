@@ -44,11 +44,11 @@ class CourseCard extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DefaultTextWg(text: '${course.totalDuration} | ${course.lessons!.length} lessons', fontColor: whiteColor,),   
+            // DefaultTextWg(text: '${course.totalDuration} | ${course.lessons!.length} lessons', fontColor: whiteColor,),   
             DefaultTextWg(text: '${GlobalMethods.formatPrice(course.price.toStringAsFixed(0))} ks', fontColor: whiteColor),  
             // DefaultTextWg(text: 'InCart ${course.inCart}', fontColor: primaryColor),   
             // DefaultTextWg(text: 'IsPurchased ${course.isPurchased}', fontColor: primaryColor),   
-            // DefaultTextWg(text: 'IsOrdered ${course.isOrdered}', fontColor: primaryColor),   
+            DefaultTextWg(text: '', fontColor: primaryColor),   
           ],
         ),
         trailing: Container(                         

@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
-import 'package:mb_course/providers/course_porvider.dart';
-import 'package:mb_course/route/screen_export.dart';
 import 'package:mb_course/screens/course/admin_course_details.dart';
 import 'package:mb_course/widgets/custom_button.dart';
 import 'package:mb_course/widgets/default_text.dart';
@@ -28,7 +26,7 @@ class _CreateLessonScreenState extends State<CreateLessonScreen> {
   final TextEditingController _durationController = TextEditingController();
   final TextEditingController _orderController = TextEditingController();
   bool _isDemo = false;
-  int? _selectedCourseId;
+  // int? _selectedCourseId;
   File? _videoFile;
 
   @override

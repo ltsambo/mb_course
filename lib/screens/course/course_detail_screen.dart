@@ -25,8 +25,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   
   @override  
   Widget build(BuildContext context) {
-    
-    print('course status ${widget.course.isPurchased} - C ${widget.course.inCart} - Li ${widget.course.isOrdered}');
+        
     bool isPurchased = widget.course.isPurchased ?? false;
     bool inCart = widget.course.inCart ?? false;
     bool isOrdered = widget.course.isOrdered ?? false;
@@ -133,9 +132,16 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: widget.course.lessons != null ? widget.course.lessons!.length : 0,  // ✅ Null check
+              itemCount: widget.course.lessons != null ? widget.course.lessons!.length : 0,
               itemBuilder: (context, index) {
                 final lesson = widget.course.lessons![index];
+                // Log the video field for debugging
+                print('build lesson video: ${lesson.video}');
+
+                // Check if lesson.video is valid (not null and not empty)
+                final videoUrl = (lesson.video != null && lesson.video.toString().isNotEmpty)
+                    ? lesson.video.toString()
+                    : '';
 
                 return _buildLessonItem(
                   image: '',
@@ -143,11 +149,12 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                   duration: '${lesson.duration.toStringAsFixed(0)} mins',
                   isDemo: lesson.isDemo,
                   isPurchased: widget.course.isPurchased ?? false,
-                  videoUrl: lesson.video.toString(),
+                  videoUrl: videoUrl,
                   context: context,
                 );
               },
             ),
+
 
         
             // Lessons List
@@ -238,11 +245,27 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  void _showVideoPopup(BuildContext context, String videoUrl) {
+  void _showVideoPopup(BuildContext context, String videoUrl) async {
     VideoPlayerController controller = VideoPlayerController.network(videoUrl);
 
-    controller.initialize().then((_) {
-      showDialog(
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(child: CircularProgressIndicator());
+      },
+    );
+
+    try {
+      // Await initialization of the video controller
+      await controller.initialize();
+
+      // Dismiss loading indicator
+      Navigator.of(context).pop();
+
+      // Show the video popup dialog
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return Dialog(
@@ -253,9 +276,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             child: Stack(
               children: [
                 // Video Player Widget
-                VideoPlayerWidget(url: videoUrl),
-
-                // ✅ Close Button at Top-Right
+                VideoPlayerWidget1(videoUrl: videoUrl),
+                // Close Button at Top-Right
                 Positioned(
                   top: 10,
                   right: 10,
@@ -270,17 +292,22 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             ),
           );
         },
-      ).then((_) {
-        controller.dispose(); // Dispose video player when dialog is closed
-      });
-    }).catchError((error) {
-      // Handle error and show alert
+      );
+    } catch (error) {
+      // Dismiss the loading indicator if an error occurs
+      Navigator.of(context).pop();
+
+      // Show error alert
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          backgroundColor: Colors.transparent,
-          title: Text('Video Error'),
-          content: Text('Unable to play the video. Please check your connection or try another video.'),
+          backgroundColor: whiteColor,
+          title: DefaultTextWg(text: 'Video Error $error', fontColor: blackColor),
+          content: DefaultTextWg(
+            text:
+                'Unable to play the video. Please check your connection or try another video.',
+            fontColor: blackColor,
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -289,8 +316,12 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           ],
         ),
       );
-    });
-  }  
+    } finally {
+      // Dispose the video controller when the popup is closed
+      controller.dispose();
+    }
+  }
+
 }
 
 

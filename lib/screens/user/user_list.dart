@@ -65,7 +65,7 @@ class _UserListScreenState extends State<UserListScreen> {
               itemCount: userProvider.users.length,
               itemBuilder: (context, index) {
                 final UserListModel user = userProvider.users[index];    
-                print('user image ${user.image}')            ;
+                print('user image ${user.image}');
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Card(

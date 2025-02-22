@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mb_course/main.dart';
+import 'package:mb_course/providers/business.dart';
 import 'package:mb_course/providers/order_provider.dart';
 import 'package:mb_course/providers/user_provider.dart';
 import 'package:mb_course/screens/auth/login_screen.dart';
@@ -30,6 +31,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
   void initState() {
     super.initState();
     Provider.of<OrderProvider>(context, listen: false).fetchUserOrders(context);
+    Provider.of<PaymentBankInfoProvider>(context, listen: false).fetchPaymentBankInfo();
   }
 
   @override
@@ -191,6 +193,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       itemCount: orderProvider.orderCount,
                       itemBuilder: (ctx, index) {
                         final item = orderProvider.userOrders[index];
+                        print('item $item');
                         final orderId = item['order_id'];
                         final receiptImage = _receiptImages[orderId];
                         Color badgeColor = Colors.white;                        
@@ -250,7 +253,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                                     fontSize: 16),
                                               ),
                                               Text(
-                                                '${item['total_amount']} ks',
+                                                '${GlobalMethods.formatPrice(item['total_amount'])} ks',
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 16),

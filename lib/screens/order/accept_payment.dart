@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:mb_course/main.dart';
 import 'package:mb_course/providers/order_provider.dart';
 import 'package:mb_course/screens/order/order_details.dart';
+import 'package:mb_course/services/global_methods.dart';
 // import 'package:mb_course/providers/user_provider.dart';
 // import 'package:mb_course/screens/auth/login_screen.dart';
 // import 'package:mb_course/widgets/badge.dart';
@@ -140,6 +141,7 @@ class _AceeptOrderListScreenState extends State<AceeptOrderListScreen> {
               itemCount: pendingOrders.length,
               itemBuilder: (context, index) {
                 final order = pendingOrders[index];
+                print('order $order');
                 final payments = order['order_payment'] as List<dynamic>;
                 
                 return Card(
@@ -153,7 +155,7 @@ class _AceeptOrderListScreenState extends State<AceeptOrderListScreen> {
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                          children: [                            
                             TextButton(onPressed: () => Navigator.push(
                               context, MaterialPageRoute(builder: (context) => OrderDetailsPage(order: order))
                             ), child: DefaultTextWg(text: 'Order Id:  ${order['order_uuid']}', fontColor: Colors.blueAccent),),
@@ -174,7 +176,7 @@ class _AceeptOrderListScreenState extends State<AceeptOrderListScreen> {
                         // Text('Order ID: ${order['order_uuid']}', style: TextStyle(fontWeight: FontWeight.bold)),
                       
                         SizedBox(height: 8),
-                        Text('Total Amount: ${order['total_amount']} ks'),
+                        Text('Total Amount: ${GlobalMethods.formatPrice(order['total_amount'])} ks'),
                         // Text('Status: ${_getStatusDisplay(order['status'])}'),
                         SizedBox(height: 12),
                         

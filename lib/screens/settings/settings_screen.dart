@@ -52,6 +52,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         backgroundColor: primaryColor,
         elevation: 0,
         title: const DefaultTextWg(text: 'Settings', fontSize: 24, fontColor: whiteColor,),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back, size: 24, color: whiteColor,),
+        //   onPressed: () {
+        //     Navigator.pop(context);
+        //   },
+        // ), 
         centerTitle: false,
       ),
       body: Padding(
@@ -110,17 +116,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         );
                       },
                     ),
-                    BuildSubMenuItemWg(
-                      text: "Course Details",
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserListScreen(), 
-                          ),
-                        );
-                      },
-                    ),
+                    // BuildSubMenuItemWg(
+                    //   text: "Course Details",
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => UserListScreen(), 
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
                     BuildSubMenuItemWg(
                       text: "Accept Payments",
                       onTap: () {
@@ -166,17 +172,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         );
                       },
                     ),
-                    BuildSubMenuItemWg(
-                      text: "Privacy Policy",
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserListScreen(), 
-                          ),
-                        );
-                      },
-                    ),
+                    // BuildSubMenuItemWg(
+                    //   text: "Privacy Policy",
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => UserListScreen(), 
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
                   ],
                 ],
               ),

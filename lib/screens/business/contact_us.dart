@@ -1,27 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mb_course/consts/consts.dart';
+import 'package:mb_course/providers/business.dart';
 import 'package:mb_course/widgets/default_text.dart';
+import 'package:provider/provider.dart';
 
 
-class ContactUsScreen extends StatelessWidget {
+class ContactUsScreen extends StatefulWidget {
   const ContactUsScreen({super.key});
 
   @override
+  State<ContactUsScreen> createState() => _ContactUsScreenState();
+}
+
+class _ContactUsScreenState extends State<ContactUsScreen> {
+  
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<BusinessProvider>(context, listen: false).fetchBusiness();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final _businessProvider = Provider.of<BusinessProvider>(context);
+    print('business ${_businessProvider.business}');
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: primaryColor,
         elevation: 0,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back, color: Colors.black),
-        //   onPressed: () {
-        //     // Handle back navigation
-        //   },
-        // ),
-        title: DefaultTextWg(text: "Contact Us", fontSize: 24,),        
-        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: whiteColor, size: 24,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: DefaultTextWg(text: "Contact Us", fontSize: 24, fontColor: whiteColor,),        
+        centerTitle: false,
       ),
       body: Column(
         children: [
@@ -30,21 +46,23 @@ class ContactUsScreen extends StatelessWidget {
           Center(
             child: Column(
               children: [
-                Image.network(
-                  "https://static.vecteezy.com/system/resources/previews/012/880/017/large_2x/comfortable-apartment-with-bright-and-cozy-interior-design-free-photo.jpg", // Replace with logo URL or asset
-                  width: 80,
-                  height: 80,
-                ),
+                _businessProvider.business?.logo == null
+                ? Image.asset(noUserImagePath, width: 100, height: 100, fit: BoxFit.cover)
+                : Image.network(_businessProvider.business?.logo?.toString() ?? '', width: 100, height: 100, fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  // Show fallback image when the network image fails to load
+                  return Image.asset(
+                    noUserImagePath,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
                 const SizedBox(height: 16),
-                DefaultTextWg(text: "Test ", fontSize: 20, fontWeight: FontWeight.bold, fontColor: primaryColor,),                
+                DefaultTextWg(text: _businessProvider.business?.name ?? '', fontSize: 24, fontWeight: FontWeight.bold, fontColor: primaryColor,),                
                 const SizedBox(height: 8),
-                Text(
-                  "test@gmail.com",
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
+                DefaultTextWg(text: _businessProvider.business?.email ?? '')
               ],
             ),
           ),
@@ -53,7 +71,7 @@ class ContactUsScreen extends StatelessWidget {
           _buildListItem(
             context,
             icon: Icons.phone_outlined,
-            text: "+95912345",
+            text:  _businessProvider.business?.contact ?? '',
             onTap: () {
               // Handle phone tap
             },
@@ -62,29 +80,29 @@ class ContactUsScreen extends StatelessWidget {
           _buildListItem(
             context,
             icon: Icons.location_on_outlined,
-            text: "Address",
+            text: _businessProvider.business?.address ?? '-',
             onTap: () {
               // Handle address tap
             },
           ),
           const Divider(),
           // Something Item
-          ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.red[100],
-              child: const Icon(Icons.refresh, color: Colors.red),
-            ),
-            title: Text(
-              "Something",
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                color: Colors.red,
-              ),
-            ),
-            onTap: () {
-              // Handle something tap
-            },
-          ),
+          // ListTile(
+          //   leading: CircleAvatar(
+          //     backgroundColor: Colors.red[100],
+          //     child: const Icon(Icons.refresh, color: Colors.red),
+          //   ),
+          //   title: Text(
+          //     "Something",
+          //     style: GoogleFonts.poppins(
+          //       fontSize: 16,
+          //       color: Colors.red,
+          //     ),
+          //   ),
+          //   onTap: () {
+          //     // Handle something tap
+          //   },
+          // ),
         ],
       ),
     );
@@ -98,7 +116,7 @@ class ContactUsScreen extends StatelessWidget {
         child: Icon(icon, color: Colors.orange),
       ),
       title: DefaultTextWg(text: text),
-      trailing: const Icon(Icons.chevron_right, color: Colors.black),
+      // trailing: const Icon(Icons.chevron_right, color: Colors.black),
       onTap: onTap,
     );
   }

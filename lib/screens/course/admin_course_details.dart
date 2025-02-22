@@ -1,7 +1,10 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:mb_course/consts/consts.dart';
 import 'package:mb_course/screens/course/course_update.dart';
 import 'package:mb_course/screens/lessons/lesson_create.dart';
+import 'package:mb_course/screens/lessons/lesson_update.dart';
 import 'package:mb_course/services/global_methods.dart';
 import 'package:mb_course/widgets/default_text.dart';
 import 'package:provider/provider.dart';
@@ -60,7 +63,7 @@ class _AdminCourseDetailScreenState extends State<AdminCourseDetailScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8), // Rounded corners
                       ),
-                      minimumSize: Size(80, 32),
+                      // minimumSize: Size(80, 32),
                       elevation: 0,
                     ),
                     onPressed: () {
@@ -116,7 +119,7 @@ class _AdminCourseDetailScreenState extends State<AdminCourseDetailScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8), // Rounded corners
                       ),
-                      minimumSize: Size(80, 32),
+                      // minimumSize: Size(80, 32),
                       elevation: 0,
                     ),
                     onPressed: () {
@@ -142,6 +145,7 @@ class _AdminCourseDetailScreenState extends State<AdminCourseDetailScreen> {
 
                 return _buildLessonItem(
                   image: '',
+                  lessonId: lesson.id.toString(),
                   title: lesson.title,
                   duration: '${lesson.duration.toStringAsFixed(0)} mins',
                   isDemo: lesson.isDemo,
@@ -158,6 +162,7 @@ class _AdminCourseDetailScreenState extends State<AdminCourseDetailScreen> {
   }
 
   Widget _buildLessonItem({
+    required String lessonId,
     required String image,
     required String title,
     required String duration,
@@ -208,9 +213,7 @@ class _AdminCourseDetailScreenState extends State<AdminCourseDetailScreen> {
           // ✅ Play Icon (Opens Video Popup)
           GestureDetector(
             onTap: () {
-              if (isDemo || isPurchased) {
-                _showVideoPopup(context, videoUrl);
-              }
+              Navigator.push(context, MaterialPageRoute(builder: (context) => UpdateLessonScreen(course: widget.course, lessonId: int.tryParse(lessonId) ?? 0)));
             },
             child: Icon(
               Icons.edit_note_rounded,

@@ -39,6 +39,12 @@ class _UserCourseListScreenState extends State<UserCourseListScreen> {
         elevation: 0,
         title: DefaultTextWg(text: "My Courses", fontSize: 24, fontColor: whiteColor),
         centerTitle: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 24, color: whiteColor,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ), 
       ),
       body: userProvider.isLoading
           ? Center(child: CircularProgressIndicator()) // Show loader while fetching data

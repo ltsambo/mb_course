@@ -75,8 +75,9 @@ class _CartScreenState extends State<CartScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5),
+
                 Text(
-                  'Log in to see shopping cart',
+                  !userProvider.isAuthenticated ? 'Log in to see shopping cart' : '',
                   style: TextStyle(color: Colors.grey),
                 ),
                 SizedBox(height: 20),
@@ -160,8 +161,7 @@ class _CartScreenState extends State<CartScreen> {
                       itemCount: cartProvider.cartUserCourses.length,
                       itemBuilder: (context, index) {
                         final item = cartProvider.cartUserCourses[index];
-
-                        print('item $item');
+                        
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Container(

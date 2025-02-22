@@ -27,7 +27,7 @@ Future<void> initializeAuth() async {
 }
 
 Future<void> initializeCarousel() async {
-  await CarouselProvider().fetchCarousels();
+  await CarouselProvider().fetchCarousels();  
 }
 
 Future<void> main() async {
@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
       MaterialApp(
         navigatorKey: NavigationService.navigatorKey,
         debugShowCheckedModeBanner: false,
-        title: 'Testing App',
+        title: 'Moe Yoga',
         initialRoute: AppRoutes.home,
         routes: {
           AppRoutes.home: (context) => MainScreen(),

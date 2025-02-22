@@ -348,6 +348,69 @@ class UserProvider with ChangeNotifier {
     return PasswordChangeResponse.fromJson(jsonResponse);
   }
 
+  Future<void> forgotPassword(BuildContext context, String email) async {
+  try {
+    final url = Uri.parse(forgotPasswordUrl);
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'email': email}),
+    );
+
+    if (response.statusCode == 200) {
+      // PIN sent successfully
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('PIN sent to email')),
+      );
+    } else {
+      // Handle API error responses
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${response.body}')),
+      );
+    }
+  } catch (error) {
+    // Handle exceptions, such as network errors
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('An error occurred: $error')),
+    );
+  }
+}
+
+
+Future<void> resetPassword(BuildContext context, String email, String pin, String newPassword) async {
+  try {
+    final url = Uri.parse(resetPasswordUrl);
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'email': email,
+        'pin': pin,
+        'new_password': newPassword,
+      }),
+    );
+    print('response ${response.statusCode}');
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Password reset successful')),
+      );
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => UserLoginScreen()),
+        (route) => false,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${response.body}')),
+      );
+    }
+  } catch (error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('An error occurred: $error')),
+    );
+  }
+}
+
   // 🔹 Logout User
   Future<void> logout(BuildContext context) async {
     // SharedPreferences prefs = await SharedPreferences.getInstance();

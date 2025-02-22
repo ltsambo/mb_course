@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mb_course/main.dart';
 import 'package:mb_course/providers/user_provider.dart';
 import 'package:mb_course/screens/auth/register_screen.dart';
+import 'package:mb_course/screens/user/user_forgot_password.dart';
 import 'package:provider/provider.dart';
 import '../../consts/consts.dart';
 import '../../widgets/default_text.dart';
@@ -161,7 +162,12 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        // Add Forgot Password functionality
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ForgotPasswordScreen(), 
+                            ),
+                          );
                       },
                       child: Text(
                         "Forgot Password",

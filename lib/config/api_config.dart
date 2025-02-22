@@ -1,6 +1,6 @@
 // String _baseUrl = "http://www.ltsambosg.com";
 
-String _baseUrl = "http://192.168.68.58:8000/api";
+String _baseUrl = "http://192.168.68.55:8000/api";
 
 // Business
 String businessListUrl = "$_baseUrl/business/businesses/";
@@ -22,6 +22,8 @@ String userProfileUrl(int userId) {
   return "$_baseUrl/user/$userId/";
 }
 
+String forgotPasswordUrl = "$_baseUrl/user/forgot-password/";
+String resetPasswordUrl = "$_baseUrl/user/reset-password/";
 String changePasswordUrl = "$_baseUrl/user/password/change/";
 String loginUrl = "$_baseUrl/user/login/";
 String logoutUrl = "$_baseUrl/employee/api/logout/";
@@ -41,6 +43,15 @@ String courseDeleteUrl(int courseId) {
 
 // lesson
 String lessonsUrl = "$_baseUrl/course/course_lesson/lessons/";
+String lessonUpdateUrl(int lessonId) {
+  return "$_baseUrl/course/lesson/update/$lessonId/";
+}
+String lessonByIdUrl(int lessonId) {
+  return "$_baseUrl/course/lessons/$lessonId/";
+}
+String lessonDeleteUrl(int lessonId) {
+  return "$_baseUrl/course/lesson/delete/$lessonId/";
+}
 
 // Cart
 String addToCartUrl = "$_baseUrl/cart/add/";

@@ -6,6 +6,7 @@ class Business {
   final String contact;
   final String email;
   final String address;
+  final String? logo;
 
   Business({
     required this.id,
@@ -13,6 +14,7 @@ class Business {
     required this.contact,
     required this.email,
     required this.address,
+    this.logo,
   });
 
   factory Business.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,7 @@ class Business {
       contact: json['contact'] ?? '',
       email: json['email'] ?? '',
       address: json['address'] ?? '',
+      logo: json['logo'] ?? '',
     );
   }
 }

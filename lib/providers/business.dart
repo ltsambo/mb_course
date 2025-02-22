@@ -41,6 +41,7 @@ class BusinessProvider with ChangeNotifier {
       
       if (response.statusCode == 200 && responseData is List && responseData.isNotEmpty) {
         _business = Business.fromJson(responseData[0]); // Extract first item from the list
+        print('_business ${_business?.email}');
         notifyListeners();
       } else {
         print("Error fetching business: Invalid response format");

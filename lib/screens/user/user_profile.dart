@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mb_course/consts/consts.dart';
+import 'package:mb_course/screens/cart/cart_screen.dart';
+import 'package:mb_course/screens/order/order_screen.dart';
 import 'package:mb_course/screens/user/user_edit.dart';
 import 'package:mb_course/screens/user/user_payment_history.dart';
 import 'package:mb_course/widgets/default_text.dart';
@@ -98,21 +100,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => UserCourseListScreen()),
+                              MaterialPageRoute(builder: (context) => CartScreen()),
                             );
                           },
                         ),
-                        const Divider(height: 1),
-                        _buildActionItem(
-                          icon: Icons.favorite_sharp,
-                          text: "Wishlist",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => UserCourseListScreen()),
-                            );
-                          },
-                        ),
+                        // const Divider(height: 1),
+                        // _buildActionItem(
+                        //   icon: Icons.favorite_sharp,
+                        //   text: "Wishlist",
+                        //   onTap: () {
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(builder: (context) => UserCourseListScreen()),
+                        //     );
+                        //   },
+                        // ),
                         const Divider(height: 1),
                         _buildActionItem(
                           icon: Icons.account_balance_wallet_outlined,
@@ -120,21 +122,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => PaymentHistoryScreen()),
+                              MaterialPageRoute(builder: (context) => OrderListScreen()),
                             );
                           },
                         ),
                         const Divider(height: 1),
-                        _buildActionItem(
-                          icon: Icons.account_balance_wallet_outlined,
-                          text: "Billing Details",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => PaymentHistoryScreen()),
-                            );
-                          },
-                        ),
+                        // _buildActionItem(
+                        //   icon: Icons.account_balance_wallet_outlined,
+                        //   text: "Billing Details",
+                        //   onTap: () {
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(builder: (context) => PaymentHistoryScreen()),
+                        //     );
+                        //   },
+                        // ),
                         const Divider(height: 1),
                         const SizedBox(height: 24),
 
