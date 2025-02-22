@@ -26,6 +26,7 @@ String forgotPasswordUrl = "$_baseUrl/user/forgot-password/";
 String resetPasswordUrl = "$_baseUrl/user/reset-password/";
 String changePasswordUrl = "$_baseUrl/user/password/change/";
 String loginUrl = "$_baseUrl/user/login/";
+String googleSiginUrl = "$_baseUrl/google-auth/";
 String logoutUrl = "$_baseUrl/employee/api/logout/";
 
 // Profile

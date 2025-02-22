@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mb_course/main.dart';
 import 'package:mb_course/providers/user_provider.dart';
+import 'package:mb_course/route/screen_export.dart';
 import 'package:mb_course/screens/auth/register_screen.dart';
 import 'package:mb_course/screens/user/user_forgot_password.dart';
+import 'package:mb_course/widgets/custom_button.dart';
 import 'package:provider/provider.dart';
 import '../../consts/consts.dart';
 import '../../widgets/default_text.dart';
@@ -215,6 +217,25 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                         fontColor: whiteColor,
                       ),
                     ),
+                  const SizedBox(height: 16),
+                  CustomElevatedButton(
+                    text: 'Google Login',
+                    onPressed: () async {
+                      bool success = await Provider.of<UserProvider>(context, listen: false).signInWithGoogle();
+
+                      if (success) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => HomeScreen()),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Google Sign-In Failed. Try again!')),
+                        );
+                      }
+                    },
+                  ),
+
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

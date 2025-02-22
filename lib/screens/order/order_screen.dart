@@ -34,6 +34,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
     Provider.of<PaymentBankInfoProvider>(context, listen: false).fetchPaymentBankInfo();
   }
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     final orderProvider = Provider.of<OrderProvider>(context);
@@ -277,34 +279,42 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                                       .spaceBetween,
                                               children: [
                                                 GestureDetector(
-                                                  onTap: () {
-                                                    showDialog(
+                                                  onTap: () async {
+                                                    setState(() {
+                                                      isLoading = true; // Start loading
+                                                    });
+
+                                                    await showDialog(
                                                       context: context,
                                                       builder: (context) => PaymentMethodsPopup(),
                                                     );
+
+                                                    setState(() {
+                                                      isLoading = false; // Stop loading
+                                                    });
                                                   },
-                                                  child: RichText(
-                                                    text: TextSpan(
-                                                      text: 'Check Payment Methods here ',
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 14,
-                                                      ),
-                                                      children: [
-                                                        TextSpan(
-                                                          text: '',
-                                                          style: TextStyle(
-                                                            color: Colors.red,
-                                                            fontWeight: FontWeight.bold,
+                                                  child: isLoading
+                                                      ? CircularProgressIndicator() // Show loader when loading
+                                                      : RichText(
+                                                          text: TextSpan(
+                                                            text: 'Check Payment Methods here ',
+                                                            style: TextStyle(
+                                                              color: Colors.black,
+                                                              fontSize: 14,
+                                                            ),
+                                                            children: [
+                                                              TextSpan(
+                                                                text: '',
+                                                                style: TextStyle(
+                                                                  color: Colors.red,
+                                                                  fontWeight: FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
-                                                  ),
                                                 ),
-                                                Icon(Icons.arrow_forward_ios,
-                                                    size: 16,
-                                                    color: Colors.red),
+                                                Icon(Icons.arrow_forward_ios, size: 16, color: Colors.red),
                                               ],
                                             ),
                                           ),
